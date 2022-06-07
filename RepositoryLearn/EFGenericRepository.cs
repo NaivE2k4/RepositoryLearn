@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RepositoryLearn
 {
@@ -21,7 +16,7 @@ namespace RepositoryLearn
         public void Create(TEntity item)
         {
             _dbSet.Add(item);
-            _dBContext.SaveChanges();
+            //_dBContext.SaveChanges();
         }
 
         public TEntity FindById(int id)

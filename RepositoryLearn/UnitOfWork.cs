@@ -1,36 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RepositoryLearn.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RepositoryLearn
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork<TContext> : IDisposable where TContext : DbContext
     {
-        private DbContext _dBContext = new DbContext(new DbContextOptionsBuilder().Options);
-        private IGenericRepository<Company> companies;
-        private IGenericRepository<Phone> phones;
+        private TContext _dBContext;
+        private IGenericRepository<Company> _companies;
+        private IGenericRepository<Phone> _phones;
 
         public IGenericRepository<Company> Companies
         { 
             get 
             {
-                if (companies == null)
-                    companies = new EFGenericRepository<Company>(_dBContext);
-                return companies; 
+                if (_companies == null)
+                    _companies = new EFGenericRepository<Company>(_dBContext);
+                return _companies; 
             }
         }
         public IGenericRepository<Phone> Phones
         {
             get
             {
-                if(phones == null)
-                    phones = new EFGenericRepository<Phone>(_dBContext);
-                return phones;
+                if(_phones == null)
+                    _phones = new EFGenericRepository<Phone>(_dBContext);
+                return _phones;
             }
+        }
+
+        public UnitOfWork(TContext dBContext)
+        {
+            _dBContext = dBContext;
         }
 
         public void Save()
