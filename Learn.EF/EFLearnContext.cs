@@ -7,5 +7,7 @@ namespace Learn.EF
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<Phone> Phones { get; set; }
+
+
     }
 }
