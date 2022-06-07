@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryLearn", "RepositoryLearn\RepositoryLearn.csproj", "{C5366478-F17F-495D-A12D-81C542F51C0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLearn", "RepositoryLearn\RepositoryLearn.csproj", "{C5366478-F17F-495D-A12D-81C542F51C0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.EF", "Learn.EF\Learn.EF.csproj", "{72FE1AB7-4434-498B-844F-54F044CE1874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.EF", "Learn.EF\Learn.EF.csproj", "{72FE1AB7-4434-498B-844F-54F044CE1874}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Models", "Learn.Models\Learn.Models.csproj", "{CF671CAA-D91F-47FA-9CBB-310E2DD6E165}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{72FE1AB7-4434-498B-844F-54F044CE1874}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72FE1AB7-4434-498B-844F-54F044CE1874}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72FE1AB7-4434-498B-844F-54F044CE1874}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF671CAA-D91F-47FA-9CBB-310E2DD6E165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF671CAA-D91F-47FA-9CBB-310E2DD6E165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF671CAA-D91F-47FA-9CBB-310E2DD6E165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF671CAA-D91F-47FA-9CBB-310E2DD6E165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
