@@ -4,6 +4,7 @@ using RepositoryLearn.Models;
 
 namespace Learn.EF
 {
+    //Я знаю что EF сам в себе реализует UOW и Repository
     public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     {
         private TContext _dBContext;

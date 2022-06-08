@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RepositoryLearn.Models
+﻿namespace RepositoryLearn.Models
 {
     public class Phone
     {
@@ -13,6 +7,6 @@ namespace RepositoryLearn.Models
         public decimal Price { get; set; }
 
         public int CompanyId { get; set; }
-        //public Company Company { get; set; }
+        public Company Company { get; set; }
     }
 }

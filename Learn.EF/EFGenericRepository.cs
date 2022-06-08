@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 
 namespace Learn.EF
 {
+    //Я знаю что EF сам в себе реализует UOW и Repository
     public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         readonly DbContext _dBContext;
@@ -17,7 +18,6 @@ namespace Learn.EF
         public void Create(TEntity item)
         {
             _dbSet.Add(item);
-            //_dBContext.SaveChanges();
         }
 
         public async Task CreateAsync(TEntity item)
@@ -61,7 +61,6 @@ namespace Learn.EF
         public void Remove(TEntity item)
         {
             _dbSet.Remove(item);
-            //_dBContext.SaveChanges();
         }
 
         public async Task RemoveAsync(TEntity item)
@@ -73,7 +72,6 @@ namespace Learn.EF
         public void Update(TEntity item)
         {
             _dBContext.Entry(item).State = EntityState.Modified;
-            //_dBContext.SaveChanges();
         }
 
         public async Task UpdateAsync(TEntity item)
