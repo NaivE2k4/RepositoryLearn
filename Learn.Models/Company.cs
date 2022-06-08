@@ -1,8 +1,7 @@
-﻿namespace RepositoryLearn.Models
+﻿namespace RepositoryLearn.Models;
+
+public class Company
 {
-    public class Company
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

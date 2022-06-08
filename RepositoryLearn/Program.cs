@@ -4,6 +4,8 @@
 Ссылки:
 
 https://www.youtube.com/watch?v=3yPpL1rEK9o
+https://www.youtube.com/watch?v=oP_OUiIK4Rc
+
  */
 
 using Learn.EF;
