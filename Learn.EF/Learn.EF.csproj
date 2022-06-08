@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Learn.Abstractions\Learn.Abstractions.csproj" />
     <ProjectReference Include="..\Learn.Models\Learn.Models.csproj" />
   </ItemGroup>
 

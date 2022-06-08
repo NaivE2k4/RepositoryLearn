@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLearn", "Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.EF", "Learn.EF\Learn.EF.csproj", "{72FE1AB7-4434-498B-844F-54F044CE1874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Models", "Learn.Models\Learn.Models.csproj", "{7B42ACAE-7AB4-43A2-8C80-3ADA32D9D8D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Models", "Learn.Models\Learn.Models.csproj", "{7B42ACAE-7AB4-43A2-8C80-3ADA32D9D8D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Abstractions", "Learn.Abstractions\Learn.Abstractions.csproj", "{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{7B42ACAE-7AB4-43A2-8C80-3ADA32D9D8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B42ACAE-7AB4-43A2-8C80-3ADA32D9D8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B42ACAE-7AB4-43A2-8C80-3ADA32D9D8D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
