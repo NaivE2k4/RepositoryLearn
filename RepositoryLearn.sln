@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Models", "Learn.Model
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Abstractions", "Learn.Abstractions\Learn.Abstractions.csproj", "{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Dapper", "Learn.Dapper\Learn.Dapper.csproj", "{C0EB8588-8B10-4486-B177-AC3BA75434D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ACF2193-DD71-4D81-8EFF-8AAE941A9D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0EB8588-8B10-4486-B177-AC3BA75434D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0EB8588-8B10-4486-B177-AC3BA75434D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0EB8588-8B10-4486-B177-AC3BA75434D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0EB8588-8B10-4486-B177-AC3BA75434D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

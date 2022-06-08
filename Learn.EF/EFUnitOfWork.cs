@@ -1,12 +1,10 @@
 ﻿using Learn.Abstractions;
-using Learn.EF;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLearn.Models;
 
-
-namespace RepositoryLearn
+namespace Learn.EF
 {
-    public class UnitOfWork<TContext> : IDisposable where TContext : DbContext
+    public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     {
         private TContext _dBContext;
         private IGenericRepository<Company> _companies;
@@ -31,7 +29,7 @@ namespace RepositoryLearn
             }
         }
 
-        public UnitOfWork(TContext dBContext)
+        public EFUnitOfWork(TContext dBContext)
         {
             _dBContext = dBContext;
         }

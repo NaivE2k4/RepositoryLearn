@@ -3,10 +3,9 @@
  */
 
 using Learn.EF;
-using RepositoryLearn;
 using RepositoryLearn.Models;
 
 var efContext = new EFLearnContext();
-UnitOfWork<EFLearnContext> a = new(efContext);
+EFUnitOfWork<EFLearnContext> a = new(efContext);
 a.Companies.Create(new Company { Id = 1, Name = "First" });
 a.Save();
