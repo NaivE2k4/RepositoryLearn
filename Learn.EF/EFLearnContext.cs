@@ -13,7 +13,9 @@ dotnet ef database update
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<Phone> Phones { get; set; }
+
         public string DbPath { get; }
+
         public EFLearnContext()
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
