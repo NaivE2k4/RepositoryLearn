@@ -1,30 +1,34 @@
 ﻿using Dapper;
 using Learn.Abstractions;
 using RepositoryLearn.Models;
-using System.Data.SQLite;
+using System.Data;
 
 namespace Learn.Dapper;
 public class DapperCompanyRepository : IGenericRepository<Company>
 {
-    string _connectionString;
-    public DapperCompanyRepository()
+    //string _connectionString;
+    IDbTransaction _dbTransaction;
+    IDbConnection _dbConnection;
+    
+    public DapperCompanyRepository(IDbTransaction dbTransaction)
     {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        var DbPath = Path.Join(path, "blogging.db");
-        _connectionString = $"Data Source={DbPath}";
+        //var folder = Environment.SpecialFolder.LocalApplicationData;
+        //var path = Environment.GetFolderPath(folder);
+        //var DbPath = Path.Join(path, "blogging.db");
+        //_connectionString = $"Data Source={DbPath}";
+        _dbConnection = dbTransaction.Connection;
+        _dbTransaction = dbTransaction;
     }
 
     private int Execute(string sql, object param)
     { 
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.Execute(sql, param);
+        //using var conn = new SQLiteConnection(_connectionString);
+        return _dbConnection.Execute(sql, param, _dbTransaction);
     }
 
     private async Task<int> ExecuteAsync(string sql, object param)
-    { 
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.ExecuteAsync(sql, param);
+    {
+        return await _dbConnection.ExecuteAsync(sql, param, _dbTransaction);
     }
     public void Create(Company item)
     {
@@ -38,20 +42,17 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public Company FindById(int id)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.QueryFirstOrDefault<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id });
+        return _dbConnection.QueryFirstOrDefault<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id }, _dbTransaction);
     }
 
     public async Task<Company> FindByIdAsync(int id)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.QueryFirstOrDefaultAsync<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id });
+        return await _dbConnection.QueryFirstOrDefaultAsync<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id }, _dbTransaction);
     }
 
     public IEnumerable<Company> Get()
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.Query<Company>("SELECT * FROM Companies");
+        return _dbConnection.Query<Company>("SELECT * FROM Companies", transaction: _dbTransaction);
     }
 
     public IEnumerable<Company> Get(Func<Company, bool> predicate)
@@ -61,8 +62,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public async Task<IEnumerable<Company>> GetAsync()
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.QueryAsync<Company>("SELECT * FROM Companies");
+        return await _dbConnection.QueryAsync<Company>("SELECT * FROM Companies", transaction: _dbTransaction);
     }
 
     public Task<IEnumerable<Company>> GetAsync(Func<Company, bool> predicate)
@@ -72,7 +72,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public void Remove(Company item)
     {
-        Execute("DELETE FROM Companies WHERE id = @id", new { id = item.Id });
+        Execute("DELETE FROM Companies WHERE id = @id", new { id = item.Id }, _);
     }
 
     public async Task RemoveAsync(Company item)
