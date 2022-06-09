@@ -1,33 +1,59 @@
-﻿using Learn.Abstractions;
+﻿using Dapper;
+using Learn.Abstractions;
 using RepositoryLearn.Models;
+using System.Data.SQLite;
 
 namespace Learn.Dapper;
 
 public class DapperPhoneRepository : IGenericRepository<Phone>
 {
-    public void Create(Phone item)
+    string _connectionString;
+    public DapperPhoneRepository()
     {
-        throw new NotImplementedException();
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        var DbPath = Path.Join(path, "blogging.db");
+        _connectionString = $"Data Source={DbPath}";
     }
 
-    public Task CreateAsync(Phone item)
+    private int Execute(string sql, object param)
     {
-        throw new NotImplementedException();
+        using var conn = new SQLiteConnection(_connectionString);
+        return conn.Execute(sql, param);
+    }
+
+    private async Task<int> ExecuteAsync(string sql, object param)
+    {
+        using var conn = new SQLiteConnection(_connectionString);
+        return await conn.ExecuteAsync(sql, param);
+    }
+
+    public void Create(Phone item)
+    {
+        Execute("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
+    }
+
+    public async Task CreateAsync(Phone item)
+    {
+        await ExecuteAsync("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
     }
 
     public Phone FindById(int id)
     {
-        throw new NotImplementedException();
+        using var conn = new SQLiteConnection(_connectionString);
+        return conn.QueryFirstOrDefault<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id });
     }
 
-    public Task<Phone> FindByIdAsync(int id)
+    public async Task<Phone> FindByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        using var conn = new SQLiteConnection(_connectionString);
+        return await conn.QueryFirstOrDefaultAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id });
     }
 
     public IEnumerable<Phone> Get()
     {
-        throw new NotImplementedException();
+        using var conn = new SQLiteConnection(_connectionString);
+        return conn.Query<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones");
     }
 
     public IEnumerable<Phone> Get(Func<Phone, bool> predicate)
@@ -35,9 +61,10 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Phone>> GetAsync()
+    public async Task<IEnumerable<Phone>> GetAsync()
     {
-        throw new NotImplementedException();
+        using var conn = new SQLiteConnection(_connectionString);
+        return await conn.QueryAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones");
     }
 
     public Task<IEnumerable<Phone>> GetAsync(Func<Phone, bool> predicate)
@@ -47,21 +74,29 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public void Remove(Phone item)
     {
-        throw new NotImplementedException();
+        Execute("DELETE FROM Phones WHERE id = @ID", new { item.Id});
     }
 
-    public Task RemoveAsync(Phone item)
+    public async Task RemoveAsync(Phone item)
     {
-        throw new NotImplementedException();
+        await ExecuteAsync("DELETE FROM Phones WHERE id = @ID", new { item.Id });
     }
 
     public void Update(Phone item)
     {
-        throw new NotImplementedException();
+        Execute(@"UPDATE Phones
+SET Name = @Name,
+Price = @Price,
+CompanyId = @CompanyId
+WHERE id = @ID", new { item.Id });
     }
 
-    public Task UpdateAsync(Phone item)
+    public async Task UpdateAsync(Phone item)
     {
-        throw new NotImplementedException();
+        await ExecuteAsync(@"UPDATE Phones
+SET Name = @Name,
+Price = @Price,
+CompanyId = @CompanyId
+WHERE id = @ID", new { item.Id });
     }
 }
