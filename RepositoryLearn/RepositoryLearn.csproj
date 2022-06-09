@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Learn.Abstractions\Learn.Abstractions.csproj" />
+    <ProjectReference Include="..\Learn.Dapper\Learn.Dapper.csproj" />
     <ProjectReference Include="..\Learn.EF\Learn.EF.csproj" />
   </ItemGroup>
 
