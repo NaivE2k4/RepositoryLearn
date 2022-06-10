@@ -11,13 +11,14 @@
 
 using Learn.Dapper;
 using Learn.EF;
-
+using RepositoryLearn.Models;
 
 var efContext = new EFLearnContext();
 using (EFUnitOfWork<EFLearnContext> uow = new(efContext))
 {
     //a.Companies.Create(new Company { Id = 1, Name = "First" });
     //a.Save();
+    Console.WriteLine("EF existing:");
     foreach (var item in await uow.Companies.GetAsync())
     {
         Console.WriteLine($"{item.Id}: {item.Name}");
@@ -26,19 +27,50 @@ using (EFUnitOfWork<EFLearnContext> uow = new(efContext))
     var item1 = uow.Companies.FindById(1);
     item1.Name = item1.Name + "1";
     uow.Companies.Update(item1);
+    Console.WriteLine("EF after change before save:");
     foreach (var item in await uow.Companies.GetAsync())
     {
         Console.WriteLine($"{item.Id}: {item.Name}");
     }
     uow.Save();
+    Console.WriteLine("EF after save:");
     foreach (var item in await uow.Companies.GetAsync())
     {
         Console.WriteLine($"{item.Id}: {item.Name}");
     }
 }
+
 using var dapperUow = new DapperUnitOfWork();
-var dapperCompanyRepo = dapperUow.Companies;
-foreach (var item in await dapperCompanyRepo.GetAsync())
+Console.WriteLine("Dapper existing:");
+foreach (var item in await dapperUow.Companies.GetAsync())
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
+await dapperUow.Companies.CreateAsync(new Company { Id = 7, Name = "Company2" });
+//Here we have different result from EF!
+//Because we are in transaction in dapper and working with what changed already?
+Console.WriteLine("Dapper after change before save:");
+foreach(var item in await dapperUow.Companies.GetAsync()) 
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
+dapperUow.Save();
+Console.WriteLine("Dapper after save:");
+foreach(var item in await dapperUow.Companies.GetAsync())
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
+var item11 = dapperUow.Companies.FindById(1);
+item11.Name = item11.Name + "1";
+dapperUow.Companies.Update(item11);
+Console.WriteLine("Dapper after update:");
+foreach(var item in await dapperUow.Companies.GetAsync())
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
+dapperUow.Rollback();
+Console.WriteLine("Dapper after rollback:");
+foreach(var item in await dapperUow.Companies.GetAsync())
 {
     Console.WriteLine($"{item.Id}: {item.Name}");
 }

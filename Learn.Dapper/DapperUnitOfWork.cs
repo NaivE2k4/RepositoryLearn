@@ -16,22 +16,24 @@ with existing transaction object
  */
 public class DapperUnitOfWork : IDisposable
 {
-    private bool disposedValue;
-    private IDbTransaction _dbTransaction;
+    private bool _disposedValue;
+    private IDbTransaction? _dbTransaction;
     private IDbConnection _dbConnection;
 
     public DapperCompanyRepository Companies
     {
         get 
         {
-            return new DapperCompanyRepository(_dbTransaction);
+            CheckAndStart();
+            return new DapperCompanyRepository(_dbTransaction!);
         }
     }
     public DapperPhoneRepository Phones 
     { 
         get 
         {
-            return new DapperPhoneRepository(_dbTransaction);
+            CheckAndStart();
+            return new DapperPhoneRepository(_dbTransaction!);
         }
     }
     public DapperUnitOfWork()
@@ -42,7 +44,13 @@ public class DapperUnitOfWork : IDisposable
         var connectionString = $"Data Source={DbPath}";
         _dbConnection = new SQLiteConnection(connectionString);
         _dbConnection.Open();
-        Start();
+    }
+    private void CheckAndStart()
+    {
+        if(_dbTransaction == null)
+        {
+            _dbTransaction = _dbConnection.BeginTransaction();
+        }
     }
     public void Start()
     { 
@@ -51,17 +59,21 @@ public class DapperUnitOfWork : IDisposable
 
     public void Rollback()
     { 
-        _dbTransaction.Rollback();
+        _dbTransaction?.Rollback();
+        _dbTransaction?.Dispose();
+        _dbTransaction = null;
     }
 
     public void Save()
     {
-        _dbTransaction.Commit();
+        _dbTransaction?.Commit();
+        _dbTransaction?.Dispose();
+        _dbTransaction = null;
     }
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposedValue)
+        if (!_disposedValue)
         {
             if (disposing)
             {
@@ -74,7 +86,7 @@ public class DapperUnitOfWork : IDisposable
             _dbConnection?.Dispose();
             // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения
             // TODO: установить значение NULL для больших полей
-            disposedValue = true;
+            _disposedValue = true;
         }
     }
 
