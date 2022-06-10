@@ -6,7 +6,7 @@ namespace Learn.NHibernate;
 
 public class NHibernateCompanyRepository : IGenericRepository<Company>
 {
-    private ISession _session;
+    private readonly ISession _session;
     public NHibernateCompanyRepository(ISession session)
     {
         _session = session;
@@ -42,9 +42,26 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>
         var result =_session.Query<Company>().ToList();
         return await Task.FromResult(result);
     }
-    public Task<IEnumerable<Company>> GetAsync(Func<Company, bool> predicate) => throw new NotImplementedException();
-    public void Remove(Company item) => throw new NotImplementedException();
-    public Task RemoveAsync(Company item) => throw new NotImplementedException();
-    public void Update(Company item) => throw new NotImplementedException();
-    public Task UpdateAsync(Company item) => throw new NotImplementedException();
+    public async Task<IEnumerable<Company>> GetAsync(Func<Company, bool> predicate)
+    {
+        var result = _session.Query<Company>().Where(predicate).ToList();
+        return await Task.FromResult(result);
+    }
+
+    public void Remove(Company item)
+    { 
+        _session.Delete(item);
+    }
+    public async Task RemoveAsync(Company item)
+    {
+        await _session.DeleteAsync(item);
+    }
+    public void Update(Company item)
+    { 
+        _session.Update(item);
+    }
+    public async Task UpdateAsync(Company item)
+    {
+        await _session.UpdateAsync(item);
+    }
 }
