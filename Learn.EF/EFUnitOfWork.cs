@@ -1,4 +1,5 @@
 ﻿using Learn.Abstractions;
+using Learn.Undo;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLearn.Models;
 
@@ -10,22 +11,20 @@ public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     private TContext _dBContext;
     private IGenericRepository<Company> _companies;
     private IGenericRepository<Phone> _phones;
+    private UndoInfo _undoInfo;
+    //private Dictionary<Type, IGenericRepository> Repos;
 
     public IGenericRepository<Company> Companies
     { 
         get 
         {
-            if (_companies == null)
-                _companies = new EFGenericRepository<Company>(_dBContext);
-            return _companies; 
+            return _companies;
         }
     }
     public IGenericRepository<Phone> Phones
     {
         get
         {
-            if(_phones == null)
-                _phones = new EFGenericRepository<Phone>(_dBContext);
             return _phones;
         }
     }
@@ -33,11 +32,24 @@ public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     public EFUnitOfWork(TContext dBContext)
     {
         _dBContext = dBContext;
+        _undoInfo = new UndoInfo();
+        _companies = new EFGenericRepository<Company>(_dBContext, _undoInfo);
+        _phones = new EFGenericRepository<Phone>(_dBContext, _undoInfo);
     }
 
     public void Save()
     { 
         _dBContext.SaveChanges();
+    }
+
+    public void Undo()
+    {
+        switch(_undoInfo.EntityType)
+        {
+            //case typeof(Company):
+            //    break;
+            //case
+        }
     }
 
     private bool disposed = false;

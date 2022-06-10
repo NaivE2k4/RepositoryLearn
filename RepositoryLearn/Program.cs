@@ -16,32 +16,32 @@ using Learn.EF;
 using Learn.NHibernate;
 using RepositoryLearn.Models;
 
-//var efContext = new EFLearnContext();
-//using (EFUnitOfWork<EFLearnContext> uow = new(efContext))
-//{
-//    //a.Companies.Create(new Company { Id = 1, Name = "First" });
-//    //a.Save();
-//    Console.WriteLine("EF existing:");
-//    foreach (var item in await uow.Companies.GetAsync())
-//    {
-//        Console.WriteLine($"{item.Id}: {item.Name}");
-//    }
+var efContext = new EFLearnContext();
+using(EFUnitOfWork<EFLearnContext> uow = new(efContext))
+{
+    //a.Companies.Create(new Company { Id = 1, Name = "First" });
+    //a.Save();
+    Console.WriteLine("EF existing:");
+    foreach(var item in await uow.Companies.GetAsync())
+    {
+        Console.WriteLine($"{item.Id}: {item.Name}");
+    }
 
-//    var item1 = uow.Companies.FindById(1);
-//    item1.Name = item1.Name + "1";
-//    uow.Companies.Update(item1);
-//    Console.WriteLine("EF after change before save:");
-//    foreach (var item in await uow.Companies.GetAsync())
-//    {
-//        Console.WriteLine($"{item.Id}: {item.Name}");
-//    }
-//    uow.Save();
-//    Console.WriteLine("EF after save:");
-//    foreach (var item in await uow.Companies.GetAsync())
-//    {
-//        Console.WriteLine($"{item.Id}: {item.Name}");
-//    }
-//}
+    var item1 = uow.Companies.FindById(1);
+    item1.Name = item1.Name + "1";
+    uow.Companies.Update(item1);
+    Console.WriteLine("EF after change before save:");
+    foreach(var item in await uow.Companies.GetAsync())
+    {
+        Console.WriteLine($"{item.Id}: {item.Name}");
+    }
+    uow.Save();
+    Console.WriteLine("EF after save:");
+    foreach(var item in await uow.Companies.GetAsync())
+    {
+        Console.WriteLine($"{item.Id}: {item.Name}");
+    }
+}
 
 //using var dapperUow = new DapperUnitOfWork();
 //Console.WriteLine("Dapper existing:");
@@ -79,24 +79,24 @@ using RepositoryLearn.Models;
 //}
 
 
-using NHibernateUnitOfWork nuow = new();
-Console.WriteLine("Nhiber existing:");
-foreach(var item in await nuow.Companies.GetAsync())
-{
-    Console.WriteLine($"{item.Id}: {item.Name}");
-}
+//using NHibernateUnitOfWork nuow = new();
+//Console.WriteLine("Nhiber existing:");
+//foreach(var item in await nuow.Companies.GetAsync())
+//{
+//    Console.WriteLine($"{item.Id}: {item.Name}");
+//}
 
-var company = await nuow.Companies.FindByIdAsync(1);
-company.Name += 3;
-await nuow.Companies.UpdateAsync(company);
-Console.WriteLine("Nhiber after update before save");
-foreach(var item in await nuow.Companies.GetAsync())
-{
-    Console.WriteLine($"{item.Id}: {item.Name}");
-}
-nuow.Commit();
-Console.WriteLine("Nhiber after save");
-foreach(var item in await nuow.Companies.GetAsync())
-{
-    Console.WriteLine($"{item.Id}: {item.Name}");
-}
+//var company = await nuow.Companies.FindByIdAsync(1);
+//company.Name += 3;
+//await nuow.Companies.UpdateAsync(company);
+//Console.WriteLine("Nhiber after update before save");
+//foreach(var item in await nuow.Companies.GetAsync())
+//{
+//    Console.WriteLine($"{item.Id}: {item.Name}");
+//}
+//nuow.Commit();
+//Console.WriteLine("Nhiber after save");
+//foreach(var item in await nuow.Companies.GetAsync())
+//{
+//    Console.WriteLine($"{item.Id}: {item.Name}");
+//}

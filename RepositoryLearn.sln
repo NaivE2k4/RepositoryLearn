@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Abstractions", "Learn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Dapper", "Learn.Dapper\Learn.Dapper.csproj", "{C0EB8588-8B10-4486-B177-AC3BA75434D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.NHibernate", "Learn.NHibernate\Learn.NHibernate.csproj", "{190DF4F2-2DFC-4F44-9C60-928470FE561C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.NHibernate", "Learn.NHibernate\Learn.NHibernate.csproj", "{190DF4F2-2DFC-4F44-9C60-928470FE561C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Web", "Learn.Web\Learn.Web.csproj", "{C14E3D8C-7808-463A-A983-7241C856735B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Undo", "Learn.Undo\Learn.Undo.csproj", "{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{190DF4F2-2DFC-4F44-9C60-928470FE561C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{190DF4F2-2DFC-4F44-9C60-928470FE561C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{190DF4F2-2DFC-4F44-9C60-928470FE561C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C14E3D8C-7808-463A-A983-7241C856735B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14E3D8C-7808-463A-A983-7241C856735B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C14E3D8C-7808-463A-A983-7241C856735B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C14E3D8C-7808-463A-A983-7241C856735B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

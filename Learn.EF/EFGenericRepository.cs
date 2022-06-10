@@ -1,4 +1,5 @@
 ﻿using Learn.Abstractions;
+using Learn.Undo;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -9,20 +10,30 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 {
     readonly DbContext _dBContext;
     readonly DbSet<TEntity> _dbSet;
-    public EFGenericRepository(DbContext dbContext)
+    readonly UndoInfo _undoInfo;
+    public EFGenericRepository(DbContext dbContext, UndoInfo undoInfo)
     {
         _dBContext = dbContext;
         _dbSet = _dBContext.Set<TEntity>();
+        _undoInfo = undoInfo;
     }
 
     public void Create(TEntity item)
     {
         _dbSet.Add(item);
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Create;
+        _undoInfo.Id = -1; //We dont know
+        _undoInfo.EntityType = typeof(TEntity);
     }
 
     public async Task CreateAsync(TEntity item)
     {
         _dbSet.Add(item);
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Create;
+        _undoInfo.Id = -1; //We dont know
+        _undoInfo.EntityType = typeof(TEntity);
         await Task.CompletedTask;
     }
 
@@ -60,24 +71,59 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
     public void Remove(TEntity item)
     {
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Delete;
+        _undoInfo.Id = -1;
+        _undoInfo.EntityType = typeof(TEntity);
         _dbSet.Remove(item);
     }
 
     public async Task RemoveAsync(TEntity item)
     {
         _dbSet.Remove(item);
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Delete;
+        _undoInfo.Id = -1;
+        _undoInfo.EntityType = typeof(TEntity);
         await Task.CompletedTask;
     }
 
     public void Update(TEntity item)
     {
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Update;
+        _undoInfo.Id = -1;
+        _undoInfo.EntityType = typeof(TEntity);
         _dBContext.Entry(item).State = EntityState.Modified;
     }
 
     public async Task UpdateAsync(TEntity item)
     {
+        _undoInfo.PrevState = item;
+        _undoInfo.OpType = UndoOpType.Update;
+        _undoInfo.Id = -1;
+        _undoInfo.EntityType = typeof(TEntity);
         _dBContext.Entry(item).State = EntityState.Modified;
         await Task.CompletedTask;
+    }
+
+    //single easy undo
+    public void Undo(UndoInfo undoInfo)
+    {
+        switch(undoInfo.OpType)
+        {
+            case UndoOpType.None:
+                break;
+            case UndoOpType.Create:
+                Remove((TEntity) undoInfo.PrevState!);
+                break;
+            case UndoOpType.Update:
+                Update((TEntity) undoInfo.PrevState!);
+                break;
+            case UndoOpType.Delete:
+                Create((TEntity) undoInfo.PrevState!);
+                break;
+        }
     }
 
     public IEnumerable<TEntity> GetWithInclude(params Expression<Func<TEntity, object>>[] includeProperties)
