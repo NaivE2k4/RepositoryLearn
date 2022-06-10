@@ -49,7 +49,7 @@ public class DapperUnitOfWork : IDisposable
     {
         if(_dbTransaction == null)
         {
-            _dbTransaction = _dbConnection.BeginTransaction();
+            Start();
         }
     }
     public void Start()
