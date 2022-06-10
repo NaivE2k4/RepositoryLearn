@@ -1,4 +1,5 @@
-﻿using NHibernate;
+﻿using Learn.NHibernate.Models;
+using NHibernate;
 using NHibernate.Cfg;
 
 namespace Learn.NHibernate;
@@ -11,8 +12,22 @@ public class NHibernateUnitOfWork : IDisposable
     private ISession _session;
     private bool _disposedValue;
 
-    public NHibernatePhoneRepository Phones { get; set; }
-    public NHibernateCompanyRepository Companies { get; set; }
+    public NHibernatePhoneRepository Phones 
+    {
+        get
+        {
+            CheckAndStart();
+            return new NHibernatePhoneRepository(_session);
+        }
+    }
+    public NHibernateCompanyRepository Companies 
+    {
+        get
+        {
+            CheckAndStart();
+            return new NHibernateCompanyRepository(_session);
+        }
+    }
     public NHibernateUnitOfWork()
     {
         var folder = System.Environment.SpecialFolder.LocalApplicationData;
@@ -20,11 +35,19 @@ public class NHibernateUnitOfWork : IDisposable
         var DbPath = Path.Join(path, "blogging.db");
         var connectionString = $"Data Source={DbPath}";
         _configuration = new Configuration();
-        _configuration.SetProperty("connection.connection_string", connectionString);
         _configuration.Configure();
+        _configuration.SetProperty("connection.connection_string", connectionString);
+        _configuration.AddClass(typeof(Company));
+        _configuration.AddClass(typeof(Phone));
         _sessionFactory = _configuration.BuildSessionFactory();
     }
-
+    private void CheckAndStart()
+    {
+        if(_transaction == null || !_transaction.IsActive)
+        {
+            Start();
+        }
+    }
     public void Start()
     {
         _session = _sessionFactory.OpenSession();

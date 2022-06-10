@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Learn.Abstractions\Learn.Abstractions.csproj" />
     <ProjectReference Include="..\Learn.Dapper\Learn.Dapper.csproj" />
     <ProjectReference Include="..\Learn.EF\Learn.EF.csproj" />
+    <ProjectReference Include="..\Learn.NHibernate\Learn.NHibernate.csproj" />
   </ItemGroup>
 
 </Project>
