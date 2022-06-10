@@ -85,3 +85,18 @@ foreach(var item in await nuow.Companies.GetAsync())
 {
     Console.WriteLine($"{item.Id}: {item.Name}");
 }
+
+var company = await nuow.Companies.FindByIdAsync(1);
+company.Name += 3;
+await nuow.Companies.UpdateAsync(company);
+Console.WriteLine("Nhiber after update before save");
+foreach(var item in await nuow.Companies.GetAsync())
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
+nuow.Commit();
+Console.WriteLine("Nhiber after save");
+foreach(var item in await nuow.Companies.GetAsync())
+{
+    Console.WriteLine($"{item.Id}: {item.Name}");
+}
