@@ -6,13 +6,13 @@ using RepositoryLearn.Models;
 namespace Learn.EF;
 
 //Я знаю что EF сам в себе реализует UOW и Repository
-public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
+public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : DbContext
 {
     private TContext _dBContext;
     private IGenericRepository<Company> _companies;
     private IGenericRepository<Phone> _phones;
-    private UndoInfo _undoInfo;
-    //private Dictionary<Type, IGenericRepository> Repos;
+    private readonly UowUndoCollection _undoCollection;
+    private Dictionary<Type, IRepository> Repos;
 
     public IGenericRepository<Company> Companies
     { 
@@ -32,9 +32,9 @@ public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     public EFUnitOfWork(TContext dBContext)
     {
         _dBContext = dBContext;
-        _undoInfo = new UndoInfo();
-        _companies = new EFGenericRepository<Company>(_dBContext, _undoInfo);
-        _phones = new EFGenericRepository<Phone>(_dBContext, _undoInfo);
+        _undoCollection = new();
+        _companies = new EFGenericRepository<Company>(_dBContext, _undoCollection);
+        _phones = new EFGenericRepository<Phone>(_dBContext, _undoCollection);
     }
 
     public void Save()
@@ -44,7 +44,7 @@ public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
 
     public void Undo()
     {
-        switch(_undoInfo.EntityType)
+        switch(_undoCollection.EntityType)
         {
             //case typeof(Company):
             //    break;
@@ -70,5 +70,15 @@ public class EFUnitOfWork<TContext> : IDisposable where TContext : DbContext
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    public void Start()
+    {
+        _dBContext.ChangeTracker.Clear();
+    }
+
+    public void Rollback()
+    {
+        _dBContext.ChangeTracker.Clear();
     }
 }

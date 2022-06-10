@@ -1,5 +1,5 @@
 ﻿namespace Learn.Abstractions;
-public interface IGenericRepository<TEntity> where TEntity : class
+public interface IGenericRepository<TEntity>: IRepository where TEntity : class
 {
     void Create(TEntity item);
     Task CreateAsync(TEntity item);

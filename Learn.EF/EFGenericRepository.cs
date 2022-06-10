@@ -10,30 +10,36 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 {
     readonly DbContext _dBContext;
     readonly DbSet<TEntity> _dbSet;
-    readonly UndoInfo _undoInfo;
-    public EFGenericRepository(DbContext dbContext, UndoInfo undoInfo)
+    readonly UowUndoCollection _undoCollection;
+    public EFGenericRepository(DbContext dbContext, UowUndoCollection undoCollection)
     {
         _dBContext = dbContext;
         _dbSet = _dBContext.Set<TEntity>();
-        _undoInfo = undoInfo;
+        _undoCollection = undoCollection;
     }
 
     public void Create(TEntity item)
     {
         _dbSet.Add(item);
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Create;
-        _undoInfo.Id = -1; //We dont know
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Create,
+            Id = -1, //We dont know
+            EntityType = typeof(TEntity),
+        });
     }
 
     public async Task CreateAsync(TEntity item)
     {
         _dbSet.Add(item);
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Create;
-        _undoInfo.Id = -1; //We dont know
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Create,
+            Id = -1, //We dont know
+            EntityType = typeof(TEntity),
+        });
         await Task.CompletedTask;
     }
 
@@ -71,38 +77,50 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
     public void Remove(TEntity item)
     {
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Delete;
-        _undoInfo.Id = -1;
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Delete,
+            Id = -1,
+            EntityType = typeof(TEntity),
+        });
         _dbSet.Remove(item);
     }
 
     public async Task RemoveAsync(TEntity item)
     {
         _dbSet.Remove(item);
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Delete;
-        _undoInfo.Id = -1;
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Delete,
+            Id = -1,
+            EntityType = typeof(TEntity),
+        });
         await Task.CompletedTask;
     }
 
     public void Update(TEntity item)
     {
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Update;
-        _undoInfo.Id = -1;
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Update,
+            Id = -1,
+            EntityType = typeof(TEntity),
+        });
         _dBContext.Entry(item).State = EntityState.Modified;
     }
 
     public async Task UpdateAsync(TEntity item)
     {
-        _undoInfo.PrevState = item;
-        _undoInfo.OpType = UndoOpType.Update;
-        _undoInfo.Id = -1;
-        _undoInfo.EntityType = typeof(TEntity);
+        _undoCollection.Add(new UndoInfo
+        {
+            PrevState = item,
+            OpType = UndoOpType.Update,
+            Id = -1,
+            EntityType = typeof(TEntity),
+        });
         _dBContext.Entry(item).State = EntityState.Modified;
         await Task.CompletedTask;
     }
@@ -115,13 +133,13 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             case UndoOpType.None:
                 break;
             case UndoOpType.Create:
-                Remove((TEntity) undoInfo.PrevState!);
+                _dbSet.Remove((TEntity)undoInfo.PrevState!);
                 break;
             case UndoOpType.Update:
-                Update((TEntity) undoInfo.PrevState!);
+                _dBContext.Entry(undoInfo.PrevState!).State = EntityState.Modified;
                 break;
             case UndoOpType.Delete:
-                Create((TEntity) undoInfo.PrevState!);
+                _dbSet.Add((TEntity)undoInfo.PrevState!);
                 break;
         }
     }
