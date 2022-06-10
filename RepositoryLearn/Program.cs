@@ -1,13 +1,13 @@
-﻿/*
- Это просто личный проект для практики разных базовых штук по работе с данными
-В нем нет чистоты кода или технического совершенства - просто отработки концепций и идей
-Ссылки:
-
-https://www.youtube.com/watch?v=3yPpL1rEK9o
-https://www.youtube.com/watch?v=oP_OUiIK4Rc
-https://stackoverflow.com/questions/42957140/repository-design-pattern-with-dapper
-https://dejanstojanovic.net/aspnet/2021/november/unit-of-work-pattern-with-dapper/
- */
+﻿///
+///Это просто личный проект для практики разных базовых штук по работе с данными
+///В нем нет чистоты кода или технического совершенства - просто отработки концепций и идей
+///Ссылки:
+///
+///https://www.youtube.com/watch?v=3yPpL1rEK9o
+///https://www.youtube.com/watch?v=oP_OUiIK4Rc
+///https://stackoverflow.com/questions/42957140/repository-design-pattern-with-dapper
+///https://dejanstojanovic.net/aspnet/2021/november/unit-of-work-pattern-with-dapper/
+///
 
 using Learn.Dapper;
 using Learn.EF;
