@@ -1,32 +1,33 @@
 ﻿using Dapper;
 using Learn.Abstractions;
 using RepositoryLearn.Models;
+using System.Data;
 using System.Data.SQLite;
 
 namespace Learn.Dapper;
 
-
+/// <summary>
+/// This is a repository class to work with Unit of Work
+/// More see <see cref="DapperUnitOfWork"/>
+/// </summary>
 public class DapperPhoneRepository : IGenericRepository<Phone>
 {
-    string _connectionString;
-    public DapperPhoneRepository()
+    IDbTransaction _dbTransaction;
+    IDbConnection _dbConnection;
+    public DapperPhoneRepository(IDbTransaction dbTransaction)
     {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        var DbPath = Path.Join(path, "blogging.db");
-        _connectionString = $"Data Source={DbPath}";
+        _dbConnection = dbTransaction.Connection;
+        _dbTransaction = dbTransaction;
     }
 
     private int Execute(string sql, object param)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.Execute(sql, param);
+        return _dbConnection.Execute(sql, param, _dbTransaction);
     }
 
     private async Task<int> ExecuteAsync(string sql, object param)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.ExecuteAsync(sql, param);
+        return await _dbConnection.ExecuteAsync(sql, param, _dbTransaction);
     }
 
     public void Create(Phone item)
@@ -41,20 +42,17 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public Phone FindById(int id)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.QueryFirstOrDefault<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id });
+        return _dbConnection.QueryFirstOrDefault<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id }, _dbTransaction);
     }
 
     public async Task<Phone> FindByIdAsync(int id)
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.QueryFirstOrDefaultAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id });
+        return await _dbConnection.QueryFirstOrDefaultAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones WHERE Id = @Id", new { Id = id }, _dbTransaction);
     }
 
     public IEnumerable<Phone> Get()
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return conn.Query<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones");
+        return _dbConnection.Query<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones", transaction: _dbTransaction);
     }
 
     public IEnumerable<Phone> Get(Func<Phone, bool> predicate)
@@ -64,8 +62,7 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public async Task<IEnumerable<Phone>> GetAsync()
     {
-        using var conn = new SQLiteConnection(_connectionString);
-        return await conn.QueryAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones");
+        return await _dbConnection.QueryAsync<Phone>("SELECT Id, Name, Price, CompanyId FROM Phones", transaction: _dbTransaction);
     }
 
     public Task<IEnumerable<Phone>> GetAsync(Func<Phone, bool> predicate)

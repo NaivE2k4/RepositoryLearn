@@ -4,18 +4,17 @@ using RepositoryLearn.Models;
 using System.Data;
 
 namespace Learn.Dapper;
+/// <summary>
+/// This is a repository class to work with Unit of Work
+/// More see <see cref="DapperUnitOfWork"/>
+/// </summary>
 public class DapperCompanyRepository : IGenericRepository<Company>
 {
-    //string _connectionString;
     IDbTransaction _dbTransaction;
     IDbConnection _dbConnection;
     
     public DapperCompanyRepository(IDbTransaction dbTransaction)
     {
-        //var folder = Environment.SpecialFolder.LocalApplicationData;
-        //var path = Environment.GetFolderPath(folder);
-        //var DbPath = Path.Join(path, "blogging.db");
-        //_connectionString = $"Data Source={DbPath}";
         _dbConnection = dbTransaction.Connection;
         _dbTransaction = dbTransaction;
     }
@@ -72,7 +71,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public void Remove(Company item)
     {
-        Execute("DELETE FROM Companies WHERE id = @id", new { id = item.Id }, _);
+        Execute("DELETE FROM Companies WHERE id = @id", new { id = item.Id });
     }
 
     public async Task RemoveAsync(Company item)

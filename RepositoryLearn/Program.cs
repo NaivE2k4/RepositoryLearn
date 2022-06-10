@@ -36,7 +36,8 @@ using (EFUnitOfWork<EFLearnContext> uow = new(efContext))
         Console.WriteLine($"{item.Id}: {item.Name}");
     }
 }
-var dapperCompanyRepo = new DapperCompanyRepository();
+using var dapperUow = new DapperUnitOfWork();
+var dapperCompanyRepo = dapperUow.Companies;
 foreach (var item in await dapperCompanyRepo.GetAsync())
 {
     Console.WriteLine($"{item.Id}: {item.Name}");
