@@ -1,10 +1,11 @@
-﻿using Learn.NHibernate.Models;
+﻿using Learn.Abstractions;
+using Learn.NHibernate.Models;
 using NHibernate;
 using NHibernate.Cfg;
 
 namespace Learn.NHibernate;
 
-public class NHibernateUnitOfWork : IDisposable
+public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
 {
     private Configuration _configuration;
     private ISessionFactory _sessionFactory;
@@ -54,7 +55,7 @@ public class NHibernateUnitOfWork : IDisposable
         _transaction = _session.BeginTransaction();
     }
 
-    public void Commit()
+    public void Save()
     {
         _transaction.Commit();
         _session.Close();
@@ -64,6 +65,11 @@ public class NHibernateUnitOfWork : IDisposable
     {
         _transaction.Rollback();
         _session.Close();
+    }
+
+    public void Undo()
+    {
+        throw new NotImplementedException();
     }
 
     protected virtual void Dispose(bool disposing)
@@ -97,4 +103,5 @@ public class NHibernateUnitOfWork : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
 }

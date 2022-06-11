@@ -1,5 +1,6 @@
 ﻿using Learn.Abstractions;
 using Learn.NHibernate.Models;
+using Learn.Undo;
 using NHibernate;
 
 namespace Learn.NHibernate;
@@ -56,6 +57,12 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>
     {
         await _session.DeleteAsync(item);
     }
+
+    public void UndoOperaton(UndoInfo undoInfo)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Update(Company item)
     { 
         _session.Update(item);

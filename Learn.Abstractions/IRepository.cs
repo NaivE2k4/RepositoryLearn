@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Learn.Undo;
 
 namespace Learn.Abstractions
 {
     public interface IRepository
     {//marker interface
+        void UndoOperaton(UndoInfo undoInfo);
     }
 }

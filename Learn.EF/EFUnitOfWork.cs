@@ -6,6 +6,7 @@ using RepositoryLearn.Models;
 namespace Learn.EF;
 
 //Я знаю что EF сам в себе реализует UOW и Repository
+//Это просто для отработки...
 public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : DbContext
 {
     private TContext _dBContext;
@@ -35,6 +36,13 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
         _undoCollection = new();
         _companies = new EFGenericRepository<Company>(_dBContext, _undoCollection);
         _phones = new EFGenericRepository<Phone>(_dBContext, _undoCollection);
+
+        Repos =
+            new Dictionary<Type, IRepository>
+            {
+                { typeof(Company), _companies},
+                { typeof(Phone), _phones},
+            };
     }
 
     public void Save()
@@ -42,14 +50,19 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
         _dBContext.SaveChanges();
     }
 
+    /// <summary>
+    /// Undo all registered (saved or not) changes
+    /// </summary>
     public void Undo()
     {
-        switch(_undoCollection.EntityType)
+        
+        while (_undoCollection.CanUndo())
         {
-            //case typeof(Company):
-            //    break;
-            //case
+            var undoInfo = _undoCollection.UndoOne();
+            var repo = Repos[undoInfo.EntityType!];
+            repo.UndoOperaton(undoInfo);
         }
+        Save();
     }
 
     private bool disposed = false;

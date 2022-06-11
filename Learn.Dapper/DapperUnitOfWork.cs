@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Learn.Abstractions;
+using System.Data;
 using System.Data.SQLite;
 
 namespace Learn.Dapper;
@@ -14,7 +15,7 @@ But it should be transparent to user. So i decided to try make repositories bein
 with existing transaction object
 -Creating new objects here violates SOLID T_T
  */
-public class DapperUnitOfWork : IDisposable
+public class DapperUnitOfWork : IDisposable, IUnitOfWork
 {
     private bool _disposedValue;
     private IDbTransaction? _dbTransaction;
@@ -71,6 +72,10 @@ public class DapperUnitOfWork : IDisposable
         _dbTransaction = null;
     }
 
+    public void Undo()
+    {
+        throw new NotImplementedException();
+    }
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -103,4 +108,6 @@ public class DapperUnitOfWork : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
+
 }

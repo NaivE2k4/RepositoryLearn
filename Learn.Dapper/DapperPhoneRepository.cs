@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Learn.Abstractions;
+using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
 using System.Data.SQLite;
@@ -96,5 +97,10 @@ SET Name = @Name,
 Price = @Price,
 CompanyId = @CompanyId
 WHERE id = @ID", new { item.Id });
+    }
+
+    public void UndoOperaton(UndoInfo undoInfo)
+    {
+        throw new NotImplementedException();
     }
 }

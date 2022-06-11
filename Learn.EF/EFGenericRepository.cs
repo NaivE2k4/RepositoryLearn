@@ -126,7 +126,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
     }
 
     //single easy undo
-    public void Undo(UndoInfo undoInfo)
+    public void UndoOperaton(UndoInfo undoInfo)
     {
         switch(undoInfo.OpType)
         {
@@ -183,5 +183,6 @@ params Expression<Func<TEntity, object>>[] includeProperties)
         return await Task.FromResult(includeProperties
             .Aggregate(query, (current, includeProperty) => current.Include(includeProperty)));
     }
+
 
 }

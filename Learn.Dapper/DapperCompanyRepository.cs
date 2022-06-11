@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Learn.Abstractions;
+using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
 
@@ -87,6 +88,11 @@ public class DapperCompanyRepository : IGenericRepository<Company>
     public async Task UpdateAsync(Company item)
     {
         await ExecuteAsync("UPDATE Companies SET Name = @Name WHERE id = @id", new { id = item.Id, Name = item.Name });
+    }
+
+    public void UndoOperaton(UndoInfo undoInfo)
+    {
+        throw new NotImplementedException();
     }
 }
 
