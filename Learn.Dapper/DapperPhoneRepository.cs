@@ -101,6 +101,19 @@ WHERE id = @ID", new { item.Id });
 
     public void UndoOperaton(UndoInfo undoInfo)
     {
-        throw new NotImplementedException();
+        switch (undoInfo.OpType)
+        {
+            case UndoOpType.None:
+                break;
+            case UndoOpType.Create:
+                Remove(undoInfo.PrevState as Phone);
+                break;
+            case UndoOpType.Update:
+                Update(undoInfo.Id, undoInfo.PrevState as Phone);
+                break;
+            case UndoOpType.Delete:
+                Create(undoInfo.PrevState as Phone);
+                break;
+        }
     }
 }

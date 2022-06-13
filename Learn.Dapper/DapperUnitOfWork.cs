@@ -1,4 +1,6 @@
 ﻿using Learn.Abstractions;
+using Learn.Undo;
+using RepositoryLearn.Models;
 using System.Data;
 using System.Data.SQLite;
 
@@ -20,23 +22,38 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
     private bool _disposedValue;
     private IDbTransaction? _dbTransaction;
     private IDbConnection _dbConnection;
+    private UowUndoCollection _undoCollection;
 
     public DapperCompanyRepository Companies
     {
-        get 
+        get
         {
             CheckAndStart();
             return new DapperCompanyRepository(_dbTransaction!);
         }
     }
-    public DapperPhoneRepository Phones 
-    { 
-        get 
+    public DapperPhoneRepository Phones
+    {
+        get
         {
             CheckAndStart();
             return new DapperPhoneRepository(_dbTransaction!);
         }
     }
+
+    private static Dictionary<Type, Type> objToRepoDict
+        = new Dictionary<Type, Type>()
+        {
+            { typeof(Company), typeof(DapperCompanyRepository)},
+            { typeof(Phone), typeof(DapperPhoneRepository)},
+        };
+
+    public IRepository GetRepo(Type T)
+    {
+        CheckAndStart();
+        return (IRepository)Activator.CreateInstance(objToRepoDict[T], _dbTransaction, _undoCollection);
+    }
+
     public DapperUnitOfWork()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
@@ -45,6 +62,7 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         var connectionString = $"Data Source={DbPath}";
         _dbConnection = new SQLiteConnection(connectionString);
         _dbConnection.Open();
+        _undoCollection = new UowUndoCollection();
     }
     private void CheckAndStart()
     {
@@ -74,8 +92,14 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
 
     public void Undo()
     {
-        throw new NotImplementedException();
+        while (_undoCollection.CanUndo())
+        {
+            var undoItem = _undoCollection.UndoOne();
+            var repo = GetRepo(undoItem.EntityType);
+            repo.UndoOperaton(undoItem);
+        }
     }
+
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
