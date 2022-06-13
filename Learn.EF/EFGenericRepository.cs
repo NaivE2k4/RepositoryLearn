@@ -100,25 +100,25 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         await Task.CompletedTask;
     }
 
-    public void Update(TEntity item)
+    public void Update(int id, TEntity item)
     {
         _undoCollection.Add(new UndoInfo
         {
-            PrevState = item,
+            PrevState = _dBContext.Entry(item).GetDatabaseValues()?.ToObject(),
             OpType = UndoOpType.Update,
-            Id = -1,
+            Id = id,
             EntityType = typeof(TEntity),
         });
         _dBContext.Entry(item).State = EntityState.Modified;
     }
 
-    public async Task UpdateAsync(TEntity item)
+    public async Task UpdateAsync(int id, TEntity item)
     {
         _undoCollection.Add(new UndoInfo
         {
-            PrevState = item,
+            PrevState = (await _dBContext.Entry(item).GetDatabaseValuesAsync())?.ToObject(),
             OpType = UndoOpType.Update,
-            Id = -1,
+            Id = id,
             EntityType = typeof(TEntity),
         });
         _dBContext.Entry(item).State = EntityState.Modified;
@@ -136,7 +136,10 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
                 _dbSet.Remove((TEntity)undoInfo.PrevState!);
                 break;
             case UndoOpType.Update:
-                _dBContext.Entry(undoInfo.PrevState!).State = EntityState.Modified;
+                var entity = _dbSet.Find(undoInfo.Id);
+                var entry = _dBContext.Entry(entity!);
+                entry.CurrentValues.SetValues(undoInfo.PrevState!);
+                entry.State = EntityState.Modified;
                 break;
             case UndoOpType.Delete:
                 _dbSet.Add((TEntity)undoInfo.PrevState!);

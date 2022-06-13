@@ -12,7 +12,11 @@
         }
         public void Add(UndoInfo info)
         {
-            _undos[++_currentItem] = info;
+            _currentItem++;
+            if(_currentItem < _undos.Count)
+                _undos[_currentItem] = info;
+            else
+                _undos.Add(info);
             //Ideally we should clear next items if they exists
             if (_currentItem < _undos.Count - 1) //The pointer is not on a last element
                 _undos.RemoveRange(_currentItem + 1, _undos.Count - 1 - _currentItem); //Check it!

@@ -63,11 +63,11 @@ public class NHibernatePhoneRepository : IGenericRepository<Phone>
         throw new NotImplementedException();
     }
 
-    public void Update(Phone item)
+    public void Update(int id, Phone item)
     {
         _session.Update(item);
     }
-    public async Task UpdateAsync(Phone item)
+    public async Task UpdateAsync(int id, Phone item)
     {
         await _session.UpdateAsync(item);
     }

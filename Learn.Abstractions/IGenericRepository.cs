@@ -11,8 +11,9 @@ public interface IGenericRepository<TEntity>: IRepository where TEntity : class
     Task<IEnumerable<TEntity>> GetAsync(Func<TEntity, bool> predicate);
     void Remove(TEntity item);
     Task RemoveAsync(TEntity item);
-    void Update(TEntity item);
-    Task UpdateAsync(TEntity item);
+    //Id is needed for Undo
+    void Update(int id,TEntity item);
+    Task UpdateAsync(int id, TEntity item);
 
 }
 

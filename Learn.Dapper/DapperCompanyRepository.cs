@@ -80,12 +80,12 @@ public class DapperCompanyRepository : IGenericRepository<Company>
         await ExecuteAsync("DELETE FROM Companies WHERE id = @id", new { id = item.Id });
     }
 
-    public void Update(Company item)
+    public void Update(int id, Company item)
     {
         Execute("UPDATE Companies SET Name = @Name WHERE id = @id", new { id = item.Id, Name = item.Name });
     }
 
-    public async Task UpdateAsync(Company item)
+    public async Task UpdateAsync(int id, Company item)
     {
         await ExecuteAsync("UPDATE Companies SET Name = @Name WHERE id = @id", new { id = item.Id, Name = item.Name });
     }

@@ -63,11 +63,11 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>
         throw new NotImplementedException();
     }
 
-    public void Update(Company item)
+    public void Update(int id, Company item)
     { 
         _session.Update(item);
     }
-    public async Task UpdateAsync(Company item)
+    public async Task UpdateAsync(int id, Company item)
     {
         await _session.UpdateAsync(item);
     }

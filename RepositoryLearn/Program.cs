@@ -28,8 +28,8 @@ using(EFUnitOfWork<EFLearnContext> uow = new(efContext))
     }
 
     var item1 = uow.Companies.FindById(1);
-    item1.Name = item1.Name + "1";
-    uow.Companies.Update(item1);
+    item1.Name = item1.Name + "2";
+    uow.Companies.Update(item1.Id, item1);
     Console.WriteLine("EF after change before save:");
     foreach(var item in await uow.Companies.GetAsync())
     {
@@ -38,6 +38,12 @@ using(EFUnitOfWork<EFLearnContext> uow = new(efContext))
     uow.Save();
     Console.WriteLine("EF after save:");
     foreach(var item in await uow.Companies.GetAsync())
+    {
+        Console.WriteLine($"{item.Id}: {item.Name}");
+    }
+    uow.Undo();
+    Console.WriteLine("EF after undo:");
+    foreach (var item in await uow.Companies.GetAsync())
     {
         Console.WriteLine($"{item.Id}: {item.Name}");
     }

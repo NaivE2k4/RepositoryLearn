@@ -81,7 +81,7 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
         await ExecuteAsync("DELETE FROM Phones WHERE id = @ID", new { item.Id });
     }
 
-    public void Update(Phone item)
+    public void Update(int id, Phone item)
     {
         Execute(@"UPDATE Phones
 SET Name = @Name,
@@ -90,7 +90,7 @@ CompanyId = @CompanyId
 WHERE id = @ID", new { item.Id });
     }
 
-    public async Task UpdateAsync(Phone item)
+    public async Task UpdateAsync(int id, Phone item)
     {
         await ExecuteAsync(@"UPDATE Phones
 SET Name = @Name,
