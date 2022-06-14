@@ -97,7 +97,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         }
     }
 
-    protected virtual void Dispose(bool disposing)
+    public virtual void Dispose(bool disposing)
     {
         if(!_disposedValue)
         {
