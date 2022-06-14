@@ -30,7 +30,7 @@
         /// <returns>UndoInfo.Empty if cant undo or item</returns>
         public UndoInfo UndoOne()
         {
-            if (!CanUndo())
+            if (!CanUndo)
                 return UndoInfo.Empty;
             return _undos[_currentItem--];
         }

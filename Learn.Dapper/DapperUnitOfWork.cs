@@ -29,7 +29,7 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         get
         {
             CheckAndStart();
-            return new DapperCompanyRepository(_dbTransaction!);
+            return new DapperCompanyRepository(_dbTransaction!, _undoCollection);
         }
     }
     public DapperPhoneRepository Phones
@@ -37,7 +37,7 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         get
         {
             CheckAndStart();
-            return new DapperPhoneRepository(_dbTransaction!);
+            return new DapperPhoneRepository(_dbTransaction!, _undoCollection);
         }
     }
 
@@ -92,7 +92,7 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
 
     public void Undo()
     {
-        while (_undoCollection.CanUndo())
+        while (_undoCollection.CanUndo)
         {
             var undoItem = _undoCollection.UndoOne();
             var repo = GetRepo(undoItem.EntityType);

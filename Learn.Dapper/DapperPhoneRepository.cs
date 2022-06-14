@@ -13,12 +13,15 @@ namespace Learn.Dapper;
 /// </summary>
 public class DapperPhoneRepository : IGenericRepository<Phone>
 {
-    IDbTransaction _dbTransaction;
-    IDbConnection _dbConnection;
-    public DapperPhoneRepository(IDbTransaction dbTransaction)
+    readonly IDbTransaction _dbTransaction;
+    readonly IDbConnection _dbConnection;
+    readonly UowUndoCollection _undoCollection;
+
+    public DapperPhoneRepository(IDbTransaction dbTransaction, UowUndoCollection undoCollection)
     {
         _dbConnection = dbTransaction.Connection;
         _dbTransaction = dbTransaction;
+        _undoCollection = undoCollection;
     }
 
     private int Execute(string sql, object param)

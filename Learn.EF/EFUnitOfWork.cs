@@ -56,7 +56,7 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     public void Undo()
     {
         
-        while (_undoCollection.CanUndo())
+        while (_undoCollection.CanUndo)
         {
             var undoInfo = _undoCollection.UndoOne();
             var repo = Repos[undoInfo.EntityType!];

@@ -13,11 +13,13 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 {
     IDbTransaction _dbTransaction;
     IDbConnection _dbConnection;
-    
-    public DapperCompanyRepository(IDbTransaction dbTransaction)
+    UowUndoCollection _undoCollection;
+
+    public DapperCompanyRepository(IDbTransaction dbTransaction, UowUndoCollection undoCollection)
     {
         _dbConnection = dbTransaction.Connection;
         _dbTransaction = dbTransaction;
+        _undoCollection = undoCollection;
     }
 
     private int Execute(string sql, object param)
