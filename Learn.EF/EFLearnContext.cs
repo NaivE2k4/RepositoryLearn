@@ -28,7 +28,7 @@ public class EFLearnContext : DbContext
     public EFLearnContext(DbContextOptions<EFLearnContext> options)
         :base(options)
     {
-        _connstring = options.FindExtension<SqliteOptionsExtension>().Connection.ConnectionString;
+        _connstring = options.FindExtension<SqliteOptionsExtension>()?.Connection?.ConnectionString ?? "";
     }
 
     public EFLearnContext(string connstring)

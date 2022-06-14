@@ -17,7 +17,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public DapperCompanyRepository(IDbTransaction dbTransaction, UowUndoCollection undoCollection)
     {
-        _dbConnection = dbTransaction.Connection;
+        _dbConnection = dbTransaction.Connection!;
         _dbTransaction = dbTransaction;
         _undoCollection = undoCollection;
     }
@@ -44,12 +44,12 @@ public class DapperCompanyRepository : IGenericRepository<Company>
         await ExecuteAsync("INSERT INTO Companies VALUES(@id, @name)", item);
     }
 
-    public Company FindById(int id)
+    public Company? FindById(int id)
     {
         return _dbConnection.QueryFirstOrDefault<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id }, _dbTransaction);
     }
 
-    public async Task<Company> FindByIdAsync(int id)
+    public async Task<Company?> FindByIdAsync(int id)
     {
         return await _dbConnection.QueryFirstOrDefaultAsync<Company>("SELECT * FROM Companies WHERE Id = @id", new { id = id }, _dbTransaction);
     }
@@ -107,13 +107,13 @@ public class DapperCompanyRepository : IGenericRepository<Company>
             case UndoOpType.None:
                 break;
             case UndoOpType.Create:
-                Remove(undoInfo.PrevState as Company);
+                Remove((Company) undoInfo.PrevState!);
                 break;
             case UndoOpType.Update:
-                Update(undoInfo.Id, undoInfo.PrevState as Company);
+                Update(undoInfo.Id, (Company)undoInfo.PrevState!);
                 break;
             case UndoOpType.Delete:
-                Create(undoInfo.PrevState as Company);
+                Create((Company) undoInfo.PrevState!);
                 break;
         }
     }

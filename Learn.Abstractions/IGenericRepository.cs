@@ -3,8 +3,8 @@ public interface IGenericRepository<TEntity>: IRepository where TEntity : class
 {
     void Create(TEntity item);
     Task CreateAsync(TEntity item);
-    TEntity FindById(int id);
-    Task<TEntity> FindByIdAsync(int id);
+    TEntity? FindById(int id);
+    Task<TEntity?> FindByIdAsync(int id);
     IEnumerable<TEntity> Get();
     Task<IEnumerable<TEntity>> GetAsync();
     IEnumerable<TEntity> Get(Func<TEntity, bool> predicate);

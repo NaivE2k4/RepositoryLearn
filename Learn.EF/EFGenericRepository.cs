@@ -48,12 +48,12 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         await Task.CompletedTask;
     }
 
-    public TEntity FindById(int id)
+    public TEntity? FindById(int id)
     {
         return _dbSet.Find(id);
     }
 
-    public async Task<TEntity> FindByIdAsync(int id)
+    public async Task<TEntity?> FindByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
     }
@@ -112,14 +112,18 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
     public void Update(int id, TEntity item)
     {
+        var entry = _dBContext.Entry(item);
+        var dbValues = entry.GetDatabaseValues()?.ToObject();
         _undoCollection.Add(new UndoInfo
         {
-            PrevState = _dBContext.Entry(item).GetDatabaseValues()?.ToObject(),
+            PrevState = dbValues ?? entry.CurrentValues.ToObject(),
             OpType = UndoOpType.Update,
             Id = id,
             EntityType = typeof(TEntity),
         });
-        _dBContext.Entry(item).State = EntityState.Modified;
+        
+        if(entry.State != EntityState.Added)
+            entry.State = EntityState.Modified;
     }
 
     public async Task UpdateAsync(int id, TEntity item)
@@ -144,14 +148,15 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
                 break;
             case UndoOpType.Create:
                 var obj = _dbSet.Find(undoInfo.Id); //Finds cached or not
-                _dbSet.Remove(obj);
+                _dbSet.Remove(obj!);
                 
                 break;
             case UndoOpType.Update:
                 var entity = _dbSet.Find(undoInfo.Id);
                 var entry = _dBContext.Entry(entity!);
                 entry.CurrentValues.SetValues(undoInfo.PrevState!);
-                entry.State = EntityState.Modified;
+                if(entry.State != EntityState.Added)
+                    entry.State = EntityState.Modified;
                 break;
             case UndoOpType.Delete:
                 _dbSet.Add((TEntity)undoInfo.PrevState!);
