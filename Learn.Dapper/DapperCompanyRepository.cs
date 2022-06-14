@@ -11,9 +11,9 @@ namespace Learn.Dapper;
 /// </summary>
 public class DapperCompanyRepository : IGenericRepository<Company>
 {
-    IDbTransaction _dbTransaction;
-    IDbConnection _dbConnection;
-    UowUndoCollection _undoCollection;
+    readonly IDbTransaction _dbTransaction;
+    readonly IDbConnection _dbConnection;
+    readonly UowUndoCollection _undoCollection;
 
     public DapperCompanyRepository(IDbTransaction dbTransaction, UowUndoCollection undoCollection)
     {

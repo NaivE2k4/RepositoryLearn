@@ -64,6 +64,14 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         _dbConnection.Open();
         _undoCollection = new UowUndoCollection();
     }
+
+    public DapperUnitOfWork(string connstring)
+    {
+        _dbConnection = new SQLiteConnection(connstring);
+        _dbConnection.Open();
+        _undoCollection = new UowUndoCollection();
+    }
+
     private void CheckAndStart()
     {
         if(_dbTransaction == null)

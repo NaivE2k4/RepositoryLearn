@@ -51,6 +51,15 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _sessionFactory = _configuration.BuildSessionFactory();
     }
 
+    public NHibernateUnitOfWork(string connString)
+    {
+        _configuration = new Configuration();
+        _configuration.Configure();
+        _configuration.SetProperty("connection.connection_string", connString);
+        _configuration.AddClass(typeof(Company));
+        _configuration.AddClass(typeof(Phone));
+        _sessionFactory = _configuration.BuildSessionFactory();
+    }
 
     private void CheckAndStart()
     {

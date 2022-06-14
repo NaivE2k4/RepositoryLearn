@@ -1,6 +1,6 @@
 namespace Learn.Tests;
 
-public class UnitTest1
+public class EFUowTests
 {
     [Fact]
     public void Test1()
