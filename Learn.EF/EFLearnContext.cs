@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal;
 using RepositoryLearn.Models;
 
 namespace Learn.EF;
@@ -11,26 +12,49 @@ dotnet ef database update
  */
 public class EFLearnContext : DbContext
 {
-    public DbSet<Company> Companies { get; set; }
-    public DbSet<Phone> Phones { get; set; }
+    public DbSet<Company> Companies => Set<Company>();
+    public DbSet<Phone> Phones => Set<Phone>();
 
     private readonly string _connstring;
 
     public EFLearnContext()
+        :base()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
         var DbPath = Path.Join(path, "blogging.db");
         _connstring = $"Data Source={DbPath}";
     }
+    public EFLearnContext(DbContextOptions<EFLearnContext> options)
+        :base(options)
+    {
+        _connstring = options.FindExtension<SqliteOptionsExtension>().Connection.ConnectionString;
+    }
 
     public EFLearnContext(string connstring)
+        : base()
     {
         _connstring = connstring;
     }
 
-    // The following configures EF to create a Sqlite database file in the
-    // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite(_connstring);
+    {
+        if(!options.IsConfigured)
+            options.UseSqlite(_connstring);
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Company>()
+            .ToTable("Companies")
+            .HasKey(c => c.Id)
+            ;
+        modelBuilder.Entity<Company>()
+            .Property(c=>c.Id).HasColumnName("Id");
+            ;
+
+        modelBuilder.Entity<Phone>()
+            .ToTable("Phones");
+        
+    }
 }

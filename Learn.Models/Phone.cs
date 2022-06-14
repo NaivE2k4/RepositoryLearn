@@ -1,6 +1,8 @@
-﻿namespace RepositoryLearn.Models;
+﻿using Learn.Models.Visitor;
 
-public class Phone
+namespace RepositoryLearn.Models;
+
+public class Phone : IVisitableModel
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -8,4 +10,9 @@ public class Phone
 
     public int CompanyId { get; set; }
     public Company Company { get; set; }
+
+    public void Accept(ModelVisitorBase visitor)
+    {
+        visitor.VisitPhone(this);
+    }
 }

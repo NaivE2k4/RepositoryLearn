@@ -48,6 +48,7 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     public void Save()
     { 
         _dBContext.SaveChanges();
+        _dBContext.ChangeTracker.Clear();
     }
 
     /// <summary>

@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Learn.EF\Learn.EF.csproj" />
+  </ItemGroup>
+
 </Project>

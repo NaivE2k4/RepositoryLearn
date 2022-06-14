@@ -1,7 +1,14 @@
-﻿namespace RepositoryLearn.Models;
+﻿using Learn.Models.Visitor;
 
-public class Company
+namespace RepositoryLearn.Models;
+
+public class Company : IVisitableModel
 {
     public int Id { get; set; }
     public string Name { get; set; }
+
+    public void Accept(ModelVisitorBase visitor)
+    {
+        visitor.VisitCompany(this);
+    }
 }
