@@ -67,6 +67,8 @@ public class EFUowTests : IDisposable
         _uow.Start();
         var check2 = _uow.Companies.FindById(3);
         Assert.Null(check2);
+        var check3 = _uow.Companies.FindById(2);
+        Assert.Null(check2);
     }
 
     [Fact]

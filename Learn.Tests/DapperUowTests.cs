@@ -3,33 +3,33 @@ using Learn.EF;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLearn.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Learn.Tests
 {
     public class DapperUowTests : IDisposable
     {
         private DapperUnitOfWork _uow;
+        private EFLearnContext context;
+        private SqliteConnection _masterConnection; 
         public DapperUowTests()
         {
+            string connString = "Data Source=file:memdb_name?mode=memory&cache=shared";//"Data Source=mytest;mode=memory;cache=shared";
             //InitDb with EF context
-            var connection = new SqliteConnection("DataSource=:memory:");
+            var connection = new SqliteConnection(connString);//"DataSource=:memory:"
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
             var context = new EFLearnContext(option);
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.Companies.Add(new Company { Id = 1, Name = "First" });
             context.Companies.Add(new Company { Id = 2, Name = "Second" });
             context.Phones.Add(new Phone { Id = 1, Name = "FirstPhone", CompanyId = 1, Price = 100 });
             context.Phones.Add(new Phone { Id = 2, Name = "SecondPhone", CompanyId = 2, Price = 300 });
             context.SaveChanges();
-            context.Dispose();
-            _uow = new DapperUnitOfWork("DataSource=:memory:");
+            _uow = new DapperUnitOfWork(connString);
+            _masterConnection = new SqliteConnection(connString);
+            _masterConnection.Open();
         }
 
         [Fact]
@@ -127,6 +127,9 @@ namespace Learn.Tests
         public void Dispose()
         {
             _uow?.Dispose();
+            context?.Dispose();
+            _masterConnection?.Close();
+            _masterConnection?.Dispose();
         }
     }
 }
