@@ -2,7 +2,7 @@
 using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 namespace Learn.Dapper;
 /*
@@ -60,15 +60,21 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         var path = Environment.GetFolderPath(folder);
         var DbPath = Path.Join(path, "blogging.db");
         var connectionString = $"Data Source={DbPath}";
-        _dbConnection = new SQLiteConnection(connectionString);
+        _dbConnection = new SqliteConnection(connectionString);
         _dbConnection.Open();
         _undoCollection = new UowUndoCollection();
     }
 
     public DapperUnitOfWork(string connstring)
     {
-        _dbConnection = new SQLiteConnection(connstring);
+        _dbConnection = new SqliteConnection(connstring);
         _dbConnection.Open();
+        _undoCollection = new UowUndoCollection();
+    }
+
+    public DapperUnitOfWork(SqliteConnection connection)
+    {
+        _dbConnection = connection;
         _undoCollection = new UowUndoCollection();
     }
 

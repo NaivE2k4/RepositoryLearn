@@ -43,18 +43,4 @@ public class EFLearnContext : DbContext
             options.UseSqlite(_connstring);
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Company>()
-            .ToTable("Companies")
-            .HasKey(c => c.Id)
-            ;
-        modelBuilder.Entity<Company>()
-            .Property(c=>c.Id).HasColumnName("Id");
-            ;
-
-        modelBuilder.Entity<Phone>()
-            .ToTable("Phones");
-        
-    }
 }

@@ -3,24 +3,21 @@ using Learn.EF;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLearn.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Learn.Tests
 {
     public class DapperUowTests : IDisposable
     {
         private DapperUnitOfWork _uow;
+        private EFLearnContext context;
         public DapperUowTests()
         {
             //InitDb with EF context
-            var connection = new SqliteConnection("DataSource=:memory:");
+            var connection = new SqliteConnection("DataSource=:memory:;mode=memory;cache=shared");
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
-            var context = new EFLearnContext(option);
+            context = new EFLearnContext(option);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.Companies.Add(new Company { Id = 1, Name = "First" });
@@ -28,8 +25,8 @@ namespace Learn.Tests
             context.Phones.Add(new Phone { Id = 1, Name = "FirstPhone", CompanyId = 1, Price = 100 });
             context.Phones.Add(new Phone { Id = 2, Name = "SecondPhone", CompanyId = 2, Price = 300 });
             context.SaveChanges();
-            context.Dispose();
-            _uow = new DapperUnitOfWork("DataSource=:memory:");
+            //context.Dispose();
+            _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared");
         }
 
         [Fact]
@@ -126,6 +123,7 @@ namespace Learn.Tests
 
         public void Dispose()
         {
+            context?.Dispose();
             _uow?.Dispose();
         }
     }

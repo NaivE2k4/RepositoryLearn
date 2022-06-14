@@ -107,7 +107,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>
             case UndoOpType.None:
                 break;
             case UndoOpType.Create:
-                Remove((Company) undoInfo.PrevState!);
+                Remove((Company) undoInfo.PrevState!); //ADDS TO UNDO! INFINITE CYCLE!
                 break;
             case UndoOpType.Update:
                 Update(undoInfo.Id, (Company)undoInfo.PrevState!);
