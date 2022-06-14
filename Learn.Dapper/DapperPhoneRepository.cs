@@ -3,7 +3,6 @@ using Learn.Abstractions;
 using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
-using System.Data.SQLite;
 
 namespace Learn.Dapper;
 
@@ -36,11 +35,13 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public void Create(Phone item)
     {
+        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Create, item);
         Execute("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
     }
 
     public async Task CreateAsync(Phone item)
     {
+        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Create, item);
         await ExecuteAsync("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
     }
 
@@ -76,16 +77,20 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public void Remove(Phone item)
     {
+        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Delete, item);
         Execute("DELETE FROM Phones WHERE id = @ID", new { item.Id});
     }
 
     public async Task RemoveAsync(Phone item)
     {
+        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Delete, item);
         await ExecuteAsync("DELETE FROM Phones WHERE id = @ID", new { item.Id });
     }
 
     public void Update(int id, Phone item)
     {
+        var existing = FindById(id);
+        _undoCollection.Add(id, typeof(Phone), UndoOpType.Update, existing);
         Execute(@"UPDATE Phones
 SET Name = @Name,
 Price = @Price,
@@ -95,6 +100,8 @@ WHERE id = @ID", new { item.Id });
 
     public async Task UpdateAsync(int id, Phone item)
     {
+        var existing = await FindByIdAsync(id);
+        _undoCollection.Add(id, typeof(Phone), UndoOpType.Update, existing);
         await ExecuteAsync(@"UPDATE Phones
 SET Name = @Name,
 Price = @Price,

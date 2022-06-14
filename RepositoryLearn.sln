@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.NHibernate", "Learn.N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Web", "Learn.Web\Learn.Web.csproj", "{C14E3D8C-7808-463A-A983-7241C856735B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Undo", "Learn.Undo\Learn.Undo.csproj", "{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learn.Undo", "Learn.Undo\Learn.Undo.csproj", "{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Learn.Tests", "Learn.Tests\Learn.Tests.csproj", "{98A8E6AF-546F-4DC3-8859-7B462DE78EEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{975E26F7-50D2-4338-89FB-8EF4AA98AA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98A8E6AF-546F-4DC3-8859-7B462DE78EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98A8E6AF-546F-4DC3-8859-7B462DE78EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98A8E6AF-546F-4DC3-8859-7B462DE78EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98A8E6AF-546F-4DC3-8859-7B462DE78EEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

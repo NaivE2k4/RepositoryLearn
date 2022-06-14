@@ -8,13 +8,13 @@ namespace Learn.NHibernate;
 
 public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
 {
-    private Configuration _configuration;
-    private ISessionFactory _sessionFactory;
+    private readonly Configuration _configuration;
+    private readonly ISessionFactory _sessionFactory;
     private ITransaction _transaction;
     private ISession _session;
     private readonly UowUndoCollection _undoCollection = new();
     private bool _disposedValue;
-    private static Dictionary<Type, Type> _entityToRepo =
+    private static readonly Dictionary<Type, Type> _entityToRepo =
         new()
         {
             { typeof(Company), typeof(NHibernateCompanyRepository) },

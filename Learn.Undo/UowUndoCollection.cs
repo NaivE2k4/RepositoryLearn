@@ -22,6 +22,12 @@
                 _undos.RemoveRange(_currentItem + 1, _undos.Count - 1 - _currentItem); //Check it!
         }
 
+        public void Add(int id, Type entityType, UndoOpType opType, object? prevState)
+        {
+            var undoInfo = new UndoInfo { Id = id, EntityType = entityType, OpType = opType, PrevState = prevState };
+            Add(undoInfo);
+        }
+
         public bool CanUndo =>  _currentItem > -1;
 
         /// <summary>

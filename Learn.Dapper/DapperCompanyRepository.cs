@@ -34,11 +34,13 @@ public class DapperCompanyRepository : IGenericRepository<Company>
     }
     public void Create(Company item)
     {
+        _undoCollection.Add(item.Id, typeof(Company), UndoOpType.Create, item);
         Execute("INSERT INTO Companies VALUES(@id, @name)", item);
     }
 
     public async Task CreateAsync(Company item)
     {
+        _undoCollection.Add(item.Id, typeof(Company), UndoOpType.Create, item);
         await ExecuteAsync("INSERT INTO Companies VALUES(@id, @name)", item);
     }
 
@@ -74,27 +76,46 @@ public class DapperCompanyRepository : IGenericRepository<Company>
 
     public void Remove(Company item)
     {
+        _undoCollection.Add(item.Id, typeof(Company), UndoOpType.Delete, item);
         Execute("DELETE FROM Companies WHERE id = @id", new { id = item.Id });
     }
 
     public async Task RemoveAsync(Company item)
     {
+        _undoCollection.Add(item.Id, typeof(Company), UndoOpType.Delete, item);
         await ExecuteAsync("DELETE FROM Companies WHERE id = @id", new { id = item.Id });
     }
 
     public void Update(int id, Company item)
     {
+        var existing = FindById(id);
+        _undoCollection.Add(id, typeof(Company), UndoOpType.Update, existing);
         Execute("UPDATE Companies SET Name = @Name WHERE id = @id", new { id = item.Id, Name = item.Name });
     }
 
     public async Task UpdateAsync(int id, Company item)
     {
+        var existing = await FindByIdAsync(id);
+        _undoCollection.Add(id, typeof(Company), UndoOpType.Update, existing);
         await ExecuteAsync("UPDATE Companies SET Name = @Name WHERE id = @id", new { id = item.Id, Name = item.Name });
     }
 
     public void UndoOperaton(UndoInfo undoInfo)
     {
-        throw new NotImplementedException();
+        switch(undoInfo.OpType)
+        {
+            case UndoOpType.None:
+                break;
+            case UndoOpType.Create:
+                Remove(undoInfo.PrevState as Company);
+                break;
+            case UndoOpType.Update:
+                Update(undoInfo.Id, undoInfo.PrevState as Company);
+                break;
+            case UndoOpType.Delete:
+                Create(undoInfo.PrevState as Company);
+                break;
+        }
     }
 }
 
