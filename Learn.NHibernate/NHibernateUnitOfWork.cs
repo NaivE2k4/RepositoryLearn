@@ -1,5 +1,6 @@
 ﻿using Learn.Abstractions;
 using Learn.NHibernate.Models;
+using Learn.Undo;
 using NHibernate;
 using NHibernate.Cfg;
 
@@ -11,14 +12,21 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
     private ISessionFactory _sessionFactory;
     private ITransaction _transaction;
     private ISession _session;
+    private readonly UowUndoCollection _undoCollection = new();
     private bool _disposedValue;
+    private static Dictionary<Type, Type> _entityToRepo =
+        new()
+        {
+            { typeof(Company), typeof(NHibernateCompanyRepository) },
+            { typeof(Phone), typeof(NHibernatePhoneRepository) },
+        };
 
     public NHibernatePhoneRepository Phones 
     {
         get
         {
             CheckAndStart();
-            return new NHibernatePhoneRepository(_session);
+            return new NHibernatePhoneRepository(_session, _undoCollection);
         }
     }
     public NHibernateCompanyRepository Companies 
@@ -26,7 +34,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         get
         {
             CheckAndStart();
-            return new NHibernateCompanyRepository(_session);
+            return new NHibernateCompanyRepository(_session, _undoCollection);
         }
     }
     public NHibernateUnitOfWork()
@@ -42,6 +50,8 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.AddClass(typeof(Phone));
         _sessionFactory = _configuration.BuildSessionFactory();
     }
+
+
     private void CheckAndStart()
     {
         if(_transaction == null || !_transaction.IsActive)
@@ -69,7 +79,13 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
 
     public void Undo()
     {
-        throw new NotImplementedException();
+        while(_undoCollection.CanUndo)
+        {
+            var undoItem = _undoCollection.UndoOne();
+            var repoType = _entityToRepo[undoItem.EntityType];
+            var repo = (IRepository)Activator.CreateInstance(repoType, _session, _undoCollection);
+            repo.UndoOperaton(undoItem);
+        }
     }
 
     protected virtual void Dispose(bool disposing)

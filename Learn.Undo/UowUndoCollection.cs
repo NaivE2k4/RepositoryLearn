@@ -22,10 +22,7 @@
                 _undos.RemoveRange(_currentItem + 1, _undos.Count - 1 - _currentItem); //Check it!
         }
 
-        public bool CanUndo()
-        {
-            return _currentItem > -1;
-        }
+        public bool CanUndo =>  _currentItem > -1;
 
         /// <summary>
         /// Возвращает итем и двигает указатель назад. Итем остается на месте на случай Redo
