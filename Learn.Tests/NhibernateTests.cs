@@ -1,8 +1,9 @@
 ﻿using Learn.EF;
 using Learn.NHibernate;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Microsoft.EntityFrameworkCore;
 using Learn.NHibernate.Models;
+using NHibernate.Tool.hbm2ddl;
 
 namespace Learn.Tests
 {
@@ -12,19 +13,20 @@ namespace Learn.Tests
         public NhibernateTests()
         {
             //InitDb with EF context
-            var connection = new SqliteConnection("DataSource=:memory:");
+            using var connection = new SQLiteConnection("Data Source=:memory:;mode=memory;cache=shared");
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
-            var context = new EFLearnContext(option);
-            context.Database.EnsureDeleted();
+            using var context = new EFLearnContext(connection);
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.Companies.Add(new RepositoryLearn.Models.Company { Id = 1, Name = "First" });
             context.Companies.Add(new RepositoryLearn.Models.Company { Id = 2, Name = "Second" });
             context.Phones.Add(new RepositoryLearn.Models.Phone { Id = 1, Name = "FirstPhone", CompanyId = 1, Price = 100 });
             context.Phones.Add(new RepositoryLearn.Models.Phone { Id = 2, Name = "SecondPhone", CompanyId = 2, Price = 300 });
             context.SaveChanges();
-            context.Dispose();
-            _uow = new NHibernateUnitOfWork("DataSource=:memory:");
+
+            //context.Dispose();
+            _uow = new NHibernateUnitOfWork("Data Source=:memory:;mode=memory;cache=shared");
         }
 
         [Fact]

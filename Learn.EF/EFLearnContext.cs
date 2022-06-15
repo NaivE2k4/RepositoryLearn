@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal;
 using RepositoryLearn.Models;
+using System.Data.Common;
 
 namespace Learn.EF;
 
@@ -16,6 +17,7 @@ public class EFLearnContext : DbContext
     public DbSet<Phone> Phones => Set<Phone>();
 
     private readonly string _connstring;
+    private readonly DbConnection _conn;
 
     public EFLearnContext()
         :base()
@@ -36,11 +38,20 @@ public class EFLearnContext : DbContext
     {
         _connstring = connstring;
     }
+    public EFLearnContext(DbConnection conn)
+    : base()
+    {
+        _connstring = null;
+        _conn = conn;
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         if(!options.IsConfigured)
-            options.UseSqlite(_connstring);
+            if(_connstring != null)
+                options.UseSqlite(_connstring);
+            else
+                options.UseSqlite(_conn);
     }
 
 }
