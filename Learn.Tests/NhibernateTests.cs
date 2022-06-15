@@ -55,7 +55,8 @@ namespace Learn.Tests
             var check = _uow.Companies.FindById(3);
             Assert.NotNull(check);
             Assert.True(check!.Name == company3.Name);
-
+            _uow.Save();
+            _uow.Start();
             _uow.Undo(); //Undo saves
 
             _uow.Start();
@@ -70,6 +71,9 @@ namespace Learn.Tests
             var checkName = "Blabla";
 
             var company2 = _uow.Companies.FindById(targetCompanyId);
+            _uow.Save();
+            _uow.Start();
+
             company2!.Name = checkName;
 
             _uow.Companies.Update(targetCompanyId, company2);
@@ -78,7 +82,9 @@ namespace Learn.Tests
 
             var check = _uow.Companies.FindById(targetCompanyId);
             Assert.True(check!.Name == checkName);
-
+            
+            _uow.Save();
+            _uow.Start();
             _uow.Undo();
 
             _uow.Start();

@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace Learn.EF;
 
 //Я знаю что EF сам в себе реализует UOW и Repository
-public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo, IRepository where TEntity : class, IVisitableModel
+public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo, IRepository where TEntity : class, IVisitableModel, ICloneable
 {
     readonly DbContext _dBContext;
     readonly DbSet<TEntity> _dbSet;

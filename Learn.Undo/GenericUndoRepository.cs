@@ -12,7 +12,7 @@ namespace Learn.Undo;
 /// solution: SRP! Make a wrapper class to track undo info and bypass actual obj manipulation to repo
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
-public class GenericUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo where TEntity : class, IVisitableModel
+public class GenericUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo where TEntity : class, IVisitableModel, ICloneable
 {
     private readonly IGenericRepository<TEntity> _repo;
     private readonly UowUndoCollection _undoCollection;
@@ -87,7 +87,8 @@ public class GenericUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRe
     public void Update(int id, TEntity item)
     {
         var existing = _repo.FindById(id);
-        _undoCollection.Add(id, typeof(TEntity), UndoOpType.Update, existing);
+        var exCopy = (TEntity)existing.Clone();
+        _undoCollection.Add(id, typeof(TEntity), UndoOpType.Update, exCopy);
         _repo.Update(id, item);
     }
 

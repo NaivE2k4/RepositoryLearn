@@ -94,6 +94,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         else
             _session = _sessionFactory.OpenSession();
         //_session.CacheMode = CacheMode.Ignore;
+        //_session.DefaultReadOnly = true;
         _transaction = _session.BeginTransaction();
     }
 
