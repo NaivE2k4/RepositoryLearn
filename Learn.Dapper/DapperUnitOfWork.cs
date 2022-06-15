@@ -3,6 +3,7 @@ using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
 using Microsoft.Data.Sqlite;
+using Learn.Models.Visitor;
 
 namespace Learn.Dapper;
 /*
@@ -24,34 +25,38 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
     private IDbConnection _dbConnection;
     private UowUndoCollection _undoCollection;
 
-    public DapperCompanyRepository Companies
+    public DapperUndoRepository<Company> Companies
     {
         get
         {
             CheckAndStart();
-            return new DapperCompanyRepository(_dbTransaction!, _undoCollection);
+            var repo = new DapperCompanyRepository(_dbTransaction!);
+            return new DapperUndoRepository<Company>(repo, _undoCollection);
         }
     }
-    public DapperPhoneRepository Phones
+    public DapperUndoRepository<Phone> Phones
     {
         get
         {
             CheckAndStart();
-            return new DapperPhoneRepository(_dbTransaction!, _undoCollection);
+            var repo = new DapperPhoneRepository(_dbTransaction!);
+            return new DapperUndoRepository<Phone>(repo, _undoCollection);
         }
     }
 
-    private static Dictionary<Type, Type> objToRepoDict
-        = new Dictionary<Type, Type>()
+    private static Dictionary<Type, (Type,Type)> objToRepoDict
+        = new Dictionary<Type, (Type,Type)>()
         {
-            { typeof(Company), typeof(DapperCompanyRepository)},
-            { typeof(Phone), typeof(DapperPhoneRepository)},
+            { typeof(Company), (typeof(DapperCompanyRepository), typeof(DapperUndoRepository<Company>))},
+            { typeof(Phone), (typeof(DapperPhoneRepository), typeof(DapperUndoRepository<Phone>))},
         };
 
-    public IRepository GetRepo(Type T)
+    public IUndoRepo GetRepo(Type type)
     {
         CheckAndStart();
-        return (IRepository)Activator.CreateInstance(objToRepoDict[T], _dbTransaction, _undoCollection);
+        var repo =  (IRepository)Activator.CreateInstance(objToRepoDict[type].Item1, _dbTransaction);
+        var repo2 = (IUndoRepo)Activator.CreateInstance(objToRepoDict[type].Item2, repo, _undoCollection);
+        return repo2;
     }
 
     public DapperUnitOfWork()
@@ -109,9 +114,10 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         while (_undoCollection.CanUndo)
         {
             var undoItem = _undoCollection.UndoOne();
-            var repo = GetRepo(undoItem.EntityType);
+            var repo = GetRepo(undoItem.EntityType!);
             repo.UndoOperaton(undoItem);
         }
+        Save();
     }
 
     protected virtual void Dispose(bool disposing)

@@ -13,7 +13,7 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     private IGenericRepository<Company> _companies;
     private IGenericRepository<Phone> _phones;
     private readonly UowUndoCollection _undoCollection;
-    private Dictionary<Type, IRepository> Repos;
+    private Dictionary<Type, IUndoRepo> Repos;
 
     public IGenericRepository<Company> Companies
     { 
@@ -38,10 +38,10 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
         _phones = new EFGenericRepository<Phone>(_dBContext, _undoCollection);
 
         Repos =
-            new Dictionary<Type, IRepository>
+            new Dictionary<Type, IUndoRepo>
             {
-                { typeof(Company), _companies},
-                { typeof(Phone), _phones},
+                { typeof(Company), (IUndoRepo)_companies},
+                { typeof(Phone), (IUndoRepo)_phones},
             };
     }
 

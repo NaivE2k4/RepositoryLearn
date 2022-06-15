@@ -92,7 +92,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         {
             var undoItem = _undoCollection.UndoOne();
             var repoType = _entityToRepo[undoItem.EntityType];
-            var repo = (IRepository)Activator.CreateInstance(repoType, _session, _undoCollection);
+            var repo = (IUndoRepo)Activator.CreateInstance(repoType, _session, _undoCollection);
             repo.UndoOperaton(undoItem);
         }
     }

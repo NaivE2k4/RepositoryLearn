@@ -10,14 +10,14 @@ namespace Learn.Tests
     public class DapperUowTests : IDisposable
     {
         private DapperUnitOfWork _uow;
-        private EFLearnContext context;
+        //private EFLearnContext context;
         public DapperUowTests()
         {
             //InitDb with EF context
-            var connection = new SqliteConnection("DataSource=:memory:;mode=memory;cache=shared");
+            using var connection = new SqliteConnection("DataSource=:memory:;mode=memory;cache=shared");
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
-            context = new EFLearnContext(option);
+            using var context = new EFLearnContext(option);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.Companies.Add(new Company { Id = 1, Name = "First" });
@@ -32,6 +32,7 @@ namespace Learn.Tests
         [Fact]
         public void TestGetById()
         {
+            //using var _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared"); 
             var company = _uow.Companies.FindById(1);
             Assert.NotNull(company);
             Assert.True(company!.Name == "First");
@@ -47,6 +48,8 @@ namespace Learn.Tests
         [Fact]
         public void TestCreateAndUndoCreate()
         {
+            //using var _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared");
+
             var company3 = new Company { Id = 3, Name = "Third" };
             _uow.Companies.Create(company3);
             _uow.Save();
@@ -65,6 +68,8 @@ namespace Learn.Tests
         [Fact]
         public void TestUpdateAndUndoUpdate()
         {
+            //using var _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared");
+
             var targetCompanyId = 2;
             var checkName = "Blabla";
 
@@ -88,6 +93,8 @@ namespace Learn.Tests
         [Fact]
         public void TestRemoveAndUndoRemove()
         {
+            //using var _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared");
+
             var targetCompanyId = 2;
             var company2 = _uow.Companies.FindById(targetCompanyId);
             _uow.Companies.Remove(company2!);
@@ -106,6 +113,8 @@ namespace Learn.Tests
         [Fact]
         public void TestMakeAndUndoSeveralChanges()
         {
+            //using var _uow = new DapperUnitOfWork("DataSource=:memory:;mode=memory;cache=shared");
+
             var company3 = new Company { Id = 3, Name = "Third" };
             _uow.Companies.Create(company3);
             company3.Name = "BlaBla";
@@ -123,7 +132,7 @@ namespace Learn.Tests
 
         public void Dispose()
         {
-            context?.Dispose();
+            //context?.Dispose();
             _uow?.Dispose();
         }
     }

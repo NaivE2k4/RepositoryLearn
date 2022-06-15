@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Learn.Abstractions;
-using Learn.Undo;
 using RepositoryLearn.Models;
 using System.Data;
 
@@ -10,17 +9,15 @@ namespace Learn.Dapper;
 /// This is a repository class to work with Unit of Work
 /// More see <see cref="DapperUnitOfWork"/>
 /// </summary>
-public class DapperPhoneRepository : IGenericRepository<Phone>
+public class DapperPhoneRepository : IGenericRepository<Phone>, IRepository
 {
     readonly IDbTransaction _dbTransaction;
     readonly IDbConnection _dbConnection;
-    readonly UowUndoCollection _undoCollection;
 
-    public DapperPhoneRepository(IDbTransaction dbTransaction, UowUndoCollection undoCollection)
+    public DapperPhoneRepository(IDbTransaction dbTransaction)
     {
         _dbConnection = dbTransaction.Connection;
         _dbTransaction = dbTransaction;
-        _undoCollection = undoCollection;
     }
 
     private int Execute(string sql, object param)
@@ -35,13 +32,11 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public void Create(Phone item)
     {
-        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Create, item);
         Execute("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
     }
 
     public async Task CreateAsync(Phone item)
     {
-        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Create, item);
         await ExecuteAsync("INSERT INTO Phones VALUES(@Id, @Name, @Price, @CompanyId)", item);
     }
 
@@ -77,20 +72,16 @@ public class DapperPhoneRepository : IGenericRepository<Phone>
 
     public void Remove(Phone item)
     {
-        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Delete, item);
         Execute("DELETE FROM Phones WHERE id = @ID", new { item.Id});
     }
 
     public async Task RemoveAsync(Phone item)
     {
-        _undoCollection.Add(item.Id, typeof(Phone), UndoOpType.Delete, item);
         await ExecuteAsync("DELETE FROM Phones WHERE id = @ID", new { item.Id });
     }
 
     public void Update(int id, Phone item)
     {
-        var existing = FindById(id);
-        _undoCollection.Add(id, typeof(Phone), UndoOpType.Update, existing);
         Execute(@"UPDATE Phones
 SET Name = @Name,
 Price = @Price,
@@ -100,30 +91,10 @@ WHERE id = @ID", new { item.Id });
 
     public async Task UpdateAsync(int id, Phone item)
     {
-        var existing = await FindByIdAsync(id);
-        _undoCollection.Add(id, typeof(Phone), UndoOpType.Update, existing);
         await ExecuteAsync(@"UPDATE Phones
 SET Name = @Name,
 Price = @Price,
 CompanyId = @CompanyId
 WHERE id = @ID", new { item.Id });
-    }
-
-    public void UndoOperaton(UndoInfo undoInfo)
-    {
-        switch (undoInfo.OpType)
-        {
-            case UndoOpType.None:
-                break;
-            case UndoOpType.Create:
-                Remove(undoInfo.PrevState as Phone);
-                break;
-            case UndoOpType.Update:
-                Update(undoInfo.Id, undoInfo.PrevState as Phone);
-                break;
-            case UndoOpType.Delete:
-                Create(undoInfo.PrevState as Phone);
-                break;
-        }
     }
 }
