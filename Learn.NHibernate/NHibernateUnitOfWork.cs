@@ -16,11 +16,11 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
     private readonly DbConnection _connection;
     private readonly UowUndoCollection _undoCollection = new();
     private bool _disposedValue;
-    private static readonly Dictionary<Type, Type> _entityToRepo =
+    private static readonly Dictionary<Type, (Type,Type)> _entityToRepo =
         new()
         {
-            { typeof(Company), typeof(NHibernateCompanyRepository) },
-            { typeof(Phone), typeof(NHibernatePhoneRepository) },
+            { typeof(Company), (typeof(NHibernateCompanyRepository), typeof(GenericUndoRepository<Company>) )},
+            { typeof(Phone), (typeof(NHibernatePhoneRepository), typeof(GenericUndoRepository<Phone>)) },
         };
 
     public GenericUndoRepository<Phone> Phones 
@@ -28,16 +28,17 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         get
         {
             CheckAndStart();
-            var repo = new NHibernatePhoneRepository(_session, _undoCollection);
+            var repo = new NHibernatePhoneRepository(_session);
             return new GenericUndoRepository<Phone>(repo, _undoCollection);
         }
     }
-    public NHibernateCompanyRepository Companies 
+    public GenericUndoRepository<Company> Companies 
     {
         get
         {
             CheckAndStart();
-            return new NHibernateCompanyRepository(_session, _undoCollection);
+            var repo = new NHibernateCompanyRepository(_session);
+            return new GenericUndoRepository<Company>(repo, _undoCollection);
         }
     }
     public NHibernateUnitOfWork()
@@ -109,8 +110,9 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         {
             var undoItem = _undoCollection.UndoOne();
             var repoType = _entityToRepo[undoItem.EntityType];
-            var repo = (IUndoRepo)Activator.CreateInstance(repoType, _session, _undoCollection);
-            repo.UndoOperaton(undoItem);
+            var repo = (IRepository)Activator.CreateInstance(repoType.Item1, _session);
+            var undoRepo = (IUndoRepo) Activator.CreateInstance(repoType.Item2, repo, _undoCollection);
+            undoRepo.UndoOperaton(undoItem);
         }
     }
 

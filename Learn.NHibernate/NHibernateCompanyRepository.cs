@@ -5,37 +5,21 @@ using NHibernate;
 
 namespace Learn.NHibernate;
 
-public class NHibernateCompanyRepository : IGenericRepository<Company>
+public class NHibernateCompanyRepository : IGenericRepository<Company>, IRepository
 {
     private readonly ISession _session;
-    private readonly UowUndoCollection _undoCollection;
 
-    public NHibernateCompanyRepository(ISession session, UowUndoCollection undoCollection)
+    public NHibernateCompanyRepository(ISession session)
     {
         _session = session;
-        _undoCollection = undoCollection;
     }
     public void Create(Company item)
     { 
         var id = (int)_session.Save(item);
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Create,
-            PrevState = item
-        });
     }
     public async Task CreateAsync(Company item)
     {
         var id = (int)(await _session.SaveAsync(item));
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Create,
-            PrevState = item
-        });
     }
     public Company FindById(int id)
     {
@@ -68,67 +52,19 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>
 
     public void Remove(Company item)
     {
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = item.Id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Delete,
-            PrevState = item
-        });
         _session.Delete(item);
     }
     public async Task RemoveAsync(Company item)
     {
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = item.Id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Delete,
-            PrevState = item
-        });
         await _session.DeleteAsync(item);
-    }
-
-    public void UndoOperaton(UndoInfo undoInfo)
-    {
-        switch(undoInfo.OpType)
-        {
-            case UndoOpType.None:
-                break;
-            case UndoOpType.Create:
-                Remove((Company) undoInfo.PrevState!);
-                break;
-            case UndoOpType.Update:
-                Update(undoInfo.Id, (Company) undoInfo.PrevState!);
-                break;
-            case UndoOpType.Delete:
-                Create((Company) undoInfo.PrevState!);
-                break;
-        }
     }
 
     public void Update(int id, Company item)
     {
-        var existing = FindById(id);
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Update,
-            PrevState = existing
-        });
         _session.Update(item);
     }
     public async Task UpdateAsync(int id, Company item)
     {
-        var existing = await FindByIdAsync(id);
-        _undoCollection.Add(new UndoInfo
-        {
-            Id = id,
-            EntityType = typeof(Company),
-            OpType = UndoOpType.Update,
-            PrevState = existing
-        });
         await _session.UpdateAsync(item);
     }
 }
