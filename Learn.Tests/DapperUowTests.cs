@@ -87,7 +87,7 @@ namespace Learn.Tests
 
             _uow.Start();
             var check2 = _uow.Companies.FindById(targetCompanyId);
-            Assert.True(check.Name == "Second");
+            Assert.True(check2.Name == "Second");
         }
 
         [Fact]
