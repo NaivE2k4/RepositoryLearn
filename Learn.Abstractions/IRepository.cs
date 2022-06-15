@@ -1,9 +1,6 @@
-﻿using Learn.Undo;
+﻿namespace Learn.Abstractions;
 
-namespace Learn.Abstractions
-{
-    public interface IRepository
-    {//marker interface
-        
-    }
+public interface IRepository
+{//marker interface
+    
 }

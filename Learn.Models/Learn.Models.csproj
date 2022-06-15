@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Company.hbm.xml" />
+    <None Remove="Phone.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="NHibernate\Company.hbm.xml" />
+    <EmbeddedResource Include="NHibernate\Phone.hbm.xml" />
+  </ItemGroup>
+
 </Project>

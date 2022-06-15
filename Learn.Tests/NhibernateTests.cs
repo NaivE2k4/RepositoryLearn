@@ -2,7 +2,7 @@
 using Learn.NHibernate;
 using System.Data.SQLite;
 using Microsoft.EntityFrameworkCore;
-using Learn.NHibernate.Models;
+using Learn.Models.NHibernate;
 using NHibernate.Tool.hbm2ddl;
 
 namespace Learn.Tests
@@ -10,10 +10,11 @@ namespace Learn.Tests
     public  class NhibernateTests : IDisposable
     {
         private NHibernateUnitOfWork _uow;
+        SQLiteConnection connection;
         public NhibernateTests()
         {
             //InitDb with EF context
-            using var connection = new SQLiteConnection("Data Source=:memory:;mode=memory;cache=shared");
+            connection = new SQLiteConnection("Data Source=:memory:;mode=memory;cache=shared");
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
             using var context = new EFLearnContext(connection);
@@ -26,7 +27,7 @@ namespace Learn.Tests
             context.SaveChanges();
 
             //context.Dispose();
-            _uow = new NHibernateUnitOfWork("Data Source=:memory:;mode=memory;cache=shared");
+            _uow = new NHibernateUnitOfWork(/*"Data Source=:memory:;mode=memory;cache=shared"*/connection);
         }
 
         [Fact]
@@ -124,6 +125,8 @@ namespace Learn.Tests
         public void Dispose()
         {
             _uow?.Dispose(true);
+            connection?.Dispose();
+
         }
     }
 }

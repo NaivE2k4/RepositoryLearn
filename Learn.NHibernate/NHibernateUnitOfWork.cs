@@ -1,8 +1,9 @@
 ﻿using Learn.Abstractions;
-using Learn.NHibernate.Models;
+using Learn.Models.NHibernate;
 using Learn.Undo;
 using NHibernate;
 using NHibernate.Cfg;
+using System.Data.Common;
 
 namespace Learn.NHibernate;
 
@@ -12,6 +13,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
     private readonly ISessionFactory _sessionFactory;
     private ITransaction _transaction;
     private ISession _session;
+    private readonly DbConnection _connection;
     private readonly UowUndoCollection _undoCollection = new();
     private bool _disposedValue;
     private static readonly Dictionary<Type, Type> _entityToRepo =
@@ -21,12 +23,13 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
             { typeof(Phone), typeof(NHibernatePhoneRepository) },
         };
 
-    public NHibernatePhoneRepository Phones 
+    public GenericUndoRepository<Phone> Phones 
     {
         get
         {
             CheckAndStart();
-            return new NHibernatePhoneRepository(_session, _undoCollection);
+            var repo = new NHibernatePhoneRepository(_session, _undoCollection);
+            return new GenericUndoRepository<Phone>(repo, _undoCollection);
         }
     }
     public NHibernateCompanyRepository Companies 
@@ -60,6 +63,16 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.AddClass(typeof(Phone));
         _sessionFactory = _configuration.BuildSessionFactory();
     }
+    public NHibernateUnitOfWork(DbConnection connection)
+    {
+        _configuration = new Configuration();
+        _configuration.Configure();
+        _configuration.SetProperty("connection.connection_string", connection.ConnectionString);
+        _configuration.AddClass(typeof(Company));
+        _configuration.AddClass(typeof(Phone));
+        _sessionFactory = _configuration.BuildSessionFactory();
+        _connection = connection;
+    }
 
     private void CheckAndStart()
     {
@@ -70,7 +83,10 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
     }
     public void Start()
     {
-        _session = _sessionFactory.OpenSession();
+        if(_connection != null)
+            _session = _sessionFactory.WithOptions().Connection(_connection).OpenSession();
+        else
+            _session = _sessionFactory.OpenSession();
         _transaction = _session.BeginTransaction();
     }
 
@@ -82,8 +98,9 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
 
     public void Rollback()
     {
-        _transaction.Rollback();
-        _session.Close();
+        if(_transaction.IsActive)
+            _transaction.Rollback();
+        _session?.Close();
     }
 
     public void Undo()

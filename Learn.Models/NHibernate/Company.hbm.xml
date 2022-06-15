@@ -1,13 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
-	namespace="Learn.NHibernate.Models" assembly="Learn.NHibernate">
-  <class name="Phone" table="Phones">
+	namespace="Learn.Models.NHibernate" assembly="Learn.Models">
+  <class name="Company" table="Companies">
     <id name="Id" column="Id">
       <generator class="identity"/>
     </id>
     <property name="Name" column="Name"  />
-    <property name="Price" column="Price" />
-    <property name="CompanyId" column="CompanyId" />
-
   </class>
 </hibernate-mapping>

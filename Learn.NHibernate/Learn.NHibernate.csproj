@@ -7,27 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Models\Company.hbm.xml" />
-    <None Remove="Models\Phone.hbm.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Models\Company.hbm.xml" />
-    <EmbeddedResource Include="Models\Phone.hbm.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NHibernate" Version="5.3.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Learn.Abstractions\Learn.Abstractions.csproj" />
+    <ProjectReference Include="..\Learn.Undo\Learn.Undo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,7 @@
-﻿using Learn.Abstractions;
-using Learn.Models.Visitor;
-using Learn.Undo;
+﻿using Learn.Models.Visitor;
+using Learn.Abstractions;
 
-namespace Learn.Dapper;
+namespace Learn.Undo;
 
 /// <summary>
 /// A wrapper class for dapper repositories to support undo
@@ -13,12 +12,12 @@ namespace Learn.Dapper;
 /// solution: SRP! Make a wrapper class to track undo info and bypass actual obj manipulation to repo
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
-public class DapperUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo where TEntity : class, IVisitableModel
+public class GenericUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo where TEntity : class, IVisitableModel
 {
     private readonly IGenericRepository<TEntity> _repo;
     private readonly UowUndoCollection _undoCollection;
 
-    public DapperUndoRepository(IGenericRepository<TEntity> repo, UowUndoCollection undoCollection)
+    public GenericUndoRepository(IGenericRepository<TEntity> repo, UowUndoCollection undoCollection)
     {
         _repo = repo;
         _undoCollection = undoCollection;
@@ -74,7 +73,7 @@ public class DapperUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRep
             case UndoOpType.None:
                 break;
             case UndoOpType.Create:
-                _repo.Remove((TEntity) undoInfo.PrevState!); //ADDS TO UNDO! INFINITE CYCLE!
+                _repo.Remove((TEntity) undoInfo.PrevState!);
                 break;
             case UndoOpType.Update:
                 _repo.Update(undoInfo.Id, (TEntity) undoInfo.PrevState!);

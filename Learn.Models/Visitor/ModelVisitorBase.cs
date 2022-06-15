@@ -9,4 +9,6 @@ public abstract class ModelVisitorBase
 {
     public abstract void VisitCompany(Company company);
     public abstract void VisitPhone(Phone phone);
+    public abstract void VisitNhibernateCompany(NHibernate.Company company);
+    public abstract void VisitNhibernatePhone(NHibernate.Phone phone);
 }

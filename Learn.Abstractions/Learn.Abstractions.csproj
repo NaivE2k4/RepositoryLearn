@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Learn.Undo\Learn.Undo.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -25,30 +25,30 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
     private IDbConnection _dbConnection;
     private UowUndoCollection _undoCollection;
 
-    public DapperUndoRepository<Company> Companies
+    public GenericUndoRepository<Company> Companies
     {
         get
         {
             CheckAndStart();
             var repo = new DapperCompanyRepository(_dbTransaction!);
-            return new DapperUndoRepository<Company>(repo, _undoCollection);
+            return new GenericUndoRepository<Company>(repo, _undoCollection);
         }
     }
-    public DapperUndoRepository<Phone> Phones
+    public GenericUndoRepository<Phone> Phones
     {
         get
         {
             CheckAndStart();
             var repo = new DapperPhoneRepository(_dbTransaction!);
-            return new DapperUndoRepository<Phone>(repo, _undoCollection);
+            return new GenericUndoRepository<Phone>(repo, _undoCollection);
         }
     }
 
     private static Dictionary<Type, (Type,Type)> objToRepoDict
         = new Dictionary<Type, (Type,Type)>()
         {
-            { typeof(Company), (typeof(DapperCompanyRepository), typeof(DapperUndoRepository<Company>))},
-            { typeof(Phone), (typeof(DapperPhoneRepository), typeof(DapperUndoRepository<Phone>))},
+            { typeof(Company), (typeof(DapperCompanyRepository), typeof(GenericUndoRepository<Company>))},
+            { typeof(Phone), (typeof(DapperPhoneRepository), typeof(GenericUndoRepository<Phone>))},
         };
 
     public IUndoRepo GetRepo(Type type)

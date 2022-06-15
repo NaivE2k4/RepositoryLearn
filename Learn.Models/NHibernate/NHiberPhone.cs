@@ -1,6 +1,8 @@
-﻿namespace Learn.NHibernate.Models;
+﻿using Learn.Models.Visitor;
 
-public class Phone
+namespace Learn.Models.NHibernate;
+
+public class Phone : IVisitableModel
 {
     public virtual int Id { get; set; }
     public virtual string Name { get; set; }
@@ -8,4 +10,9 @@ public class Phone
 
     public virtual int CompanyId { get; set; }
     public virtual Company Company { get; set; }
+
+    public virtual void Accept(ModelVisitorBase visitor)
+    {
+        visitor.VisitNhibernatePhone(this);
+    }
 }

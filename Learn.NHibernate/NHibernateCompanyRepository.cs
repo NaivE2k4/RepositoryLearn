@@ -1,5 +1,5 @@
 ﻿using Learn.Abstractions;
-using Learn.NHibernate.Models;
+using Learn.Models.NHibernate;
 using Learn.Undo;
 using NHibernate;
 
