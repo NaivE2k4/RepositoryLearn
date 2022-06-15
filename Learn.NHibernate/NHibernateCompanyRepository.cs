@@ -1,6 +1,5 @@
 ﻿using Learn.Abstractions;
 using Learn.Models.NHibernate;
-using Learn.Undo;
 using NHibernate;
 
 namespace Learn.NHibernate;
@@ -52,6 +51,7 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
 
     public void Remove(Company item)
     {
+        _session.Evict(item);
         _session.Delete(item);
     }
     public async Task RemoveAsync(Company item)
@@ -61,7 +61,7 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
 
     public void Update(int id, Company item)
     {
-        _session.Update(item);
+        _session.Merge(item);
     }
     public async Task UpdateAsync(int id, Company item)
     {

@@ -83,7 +83,7 @@ namespace Learn.Tests
 
             _uow.Start();
             var check2 = _uow.Companies.FindById(targetCompanyId);
-            Assert.True(check.Name == "Second");
+            Assert.True(check2.Name == "Second");
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace Learn.Tests
 
             _uow.Undo();
             var check2 = _uow.Companies.FindById(3);
-            Assert.Null(check);
+            Assert.Null(check2);
         }
 
         public void Dispose()

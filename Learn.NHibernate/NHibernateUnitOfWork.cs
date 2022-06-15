@@ -52,6 +52,8 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connectionString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
+        _configuration.Cache(props => props.UseQueryCache = false);
+
         _sessionFactory = _configuration.BuildSessionFactory();
     }
 
@@ -62,6 +64,8 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
+        _configuration.Cache(props => props.UseQueryCache = false);
+
         _sessionFactory = _configuration.BuildSessionFactory();
     }
     public NHibernateUnitOfWork(DbConnection connection)
@@ -71,6 +75,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connection.ConnectionString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
+        _configuration.Cache(props => props.UseQueryCache = false);
         _sessionFactory = _configuration.BuildSessionFactory();
         _connection = connection;
     }
@@ -88,6 +93,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
             _session = _sessionFactory.WithOptions().Connection(_connection).OpenSession();
         else
             _session = _sessionFactory.OpenSession();
+        _session.CacheMode = CacheMode.Ignore;
         _transaction = _session.BeginTransaction();
     }
 
@@ -114,6 +120,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
             var undoRepo = (IUndoRepo) Activator.CreateInstance(repoType.Item2, repo, _undoCollection);
             undoRepo.UndoOperaton(undoItem);
         }
+        Save();
     }
 
     public virtual void Dispose(bool disposing)
