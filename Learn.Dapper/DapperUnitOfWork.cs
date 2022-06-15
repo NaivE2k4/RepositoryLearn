@@ -1,9 +1,8 @@
 ﻿using Learn.Abstractions;
 using Learn.Undo;
+using Microsoft.Data.Sqlite;
 using RepositoryLearn.Models;
 using System.Data;
-using Microsoft.Data.Sqlite;
-using Learn.Models.Visitor;
 
 namespace Learn.Dapper;
 /*
@@ -44,8 +43,8 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         }
     }
 
-    private static Dictionary<Type, (Type,Type)> objToRepoDict
-        = new Dictionary<Type, (Type,Type)>()
+    private static Dictionary<Type, (Type, Type)> objToRepoDict
+        = new Dictionary<Type, (Type, Type)>()
         {
             { typeof(Company), (typeof(DapperCompanyRepository), typeof(GenericUndoRepository<Company>))},
             { typeof(Phone), (typeof(DapperPhoneRepository), typeof(GenericUndoRepository<Phone>))},
@@ -54,8 +53,8 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
     public IUndoRepo GetRepo(Type type)
     {
         CheckAndStart();
-        var repo =  (IRepository)Activator.CreateInstance(objToRepoDict[type].Item1, _dbTransaction);
-        var repo2 = (IUndoRepo)Activator.CreateInstance(objToRepoDict[type].Item2, repo, _undoCollection);
+        var repo = (IRepository) Activator.CreateInstance(objToRepoDict[type].Item1, _dbTransaction);
+        var repo2 = (IUndoRepo) Activator.CreateInstance(objToRepoDict[type].Item2, repo, _undoCollection);
         return repo2;
     }
 
@@ -91,12 +90,12 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
         }
     }
     public void Start()
-    { 
+    {
         _dbTransaction = _dbConnection.BeginTransaction();
     }
 
     public void Rollback()
-    { 
+    {
         _dbTransaction?.Rollback();
         _dbTransaction?.Dispose();
         _dbTransaction = null;
@@ -111,7 +110,7 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
 
     public void Undo()
     {
-        while (_undoCollection.CanUndo)
+        while(_undoCollection.CanUndo)
         {
             var undoItem = _undoCollection.UndoOne();
             var repo = GetRepo(undoItem.EntityType!);
@@ -122,24 +121,20 @@ public class DapperUnitOfWork : IDisposable, IUnitOfWork
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if(!_disposedValue)
         {
-            if (disposing)
+            if(disposing)
             {
-                // TODO: освободить управляемое состояние (управляемые объекты)
                 _dbTransaction?.Rollback();
                 _dbConnection?.Close();
 
             }
             _dbTransaction?.Dispose();
             _dbConnection?.Dispose();
-            // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения
-            // TODO: установить значение NULL для больших полей
             _disposedValue = true;
         }
     }
 
-    // TODO: переопределить метод завершения, только если "Dispose(bool disposing)" содержит код для освобождения неуправляемых ресурсов
     ~DapperUnitOfWork()
     {
         // Не изменяйте этот код. Разместите код очистки в методе "Dispose(bool disposing)".

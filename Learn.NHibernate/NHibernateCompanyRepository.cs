@@ -14,11 +14,11 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
     }
     public void Create(Company item)
     {
-        var id = (int)_session.Save(item);
+        var id = (int) _session.Save(item);
     }
     public async Task CreateAsync(Company item)
     {
-        var id = (int)(await _session.SaveAsync(item));
+        var id = (int) (await _session.SaveAsync(item));
     }
     public Company FindById(int id)
     {
@@ -35,12 +35,12 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
     }
 
     public IEnumerable<Company> Get(Func<Company, bool> predicate)
-    { 
+    {
         return _session.Query<Company>().Where(predicate).ToList();
     }
     public async Task<IEnumerable<Company>> GetAsync()
     {
-        var result =_session.Query<Company>().ToList();
+        var result = _session.Query<Company>().ToList();
         return await Task.FromResult(result);
     }
     public async Task<IEnumerable<Company>> GetAsync(Func<Company, bool> predicate)

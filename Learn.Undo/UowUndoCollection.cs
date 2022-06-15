@@ -18,7 +18,7 @@ public class UowUndoCollection
         else
             _undos.Add(info);
         //Ideally we should clear next items if they exists
-        if (_currentItem < _undos.Count - 1) //The pointer is not on a last element
+        if(_currentItem < _undos.Count - 1) //The pointer is not on a last element
             _undos.RemoveRange(_currentItem + 1, _undos.Count - 1 - _currentItem); //Check it!
     }
 
@@ -28,7 +28,7 @@ public class UowUndoCollection
         Add(undoInfo);
     }
 
-    public bool CanUndo =>  _currentItem > -1;
+    public bool CanUndo => _currentItem > -1;
 
     /// <summary>
     /// Возвращает итем и двигает указатель назад. Итем остается на месте на случай Redo
@@ -36,13 +36,13 @@ public class UowUndoCollection
     /// <returns>UndoInfo.Empty if cant undo or item</returns>
     public UndoInfo UndoOne()
     {
-        if (!CanUndo)
+        if(!CanUndo)
             return UndoInfo.Empty;
         return _undos[_currentItem--];
     }
 
     public bool CanRedo()
-    { 
+    {
         return _currentItem > -1 && _currentItem < _undos.Count - 1;
     }
 
@@ -52,7 +52,7 @@ public class UowUndoCollection
     /// <returns>UndoInfo.Empty if cant redo or item</returns>
     public UndoInfo RedoOne()
     {
-        if (!CanRedo())
+        if(!CanRedo())
             return UndoInfo.Empty;
         return _undos[++_currentItem];
 

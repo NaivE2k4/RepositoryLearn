@@ -1,13 +1,12 @@
 ﻿using Learn.EF;
-using Learn.NHibernate;
-using System.Data.SQLite;
-using Microsoft.EntityFrameworkCore;
 using Learn.Models.NHibernate;
-using NHibernate.Tool.hbm2ddl;
+using Learn.NHibernate;
+using Microsoft.EntityFrameworkCore;
+using System.Data.SQLite;
 
 namespace Learn.Tests
 {
-    public  class NhibernateTests : IDisposable
+    public class NhibernateTests : IDisposable
     {
         private NHibernateUnitOfWork _uow;
         SQLiteConnection connection;
@@ -18,7 +17,6 @@ namespace Learn.Tests
             connection.Open();
             var option = new DbContextOptionsBuilder<EFLearnContext>().UseSqlite(connection).Options;
             using var context = new EFLearnContext(connection);
-            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             context.Companies.Add(new RepositoryLearn.Models.Company { Id = 1, Name = "First" });
             context.Companies.Add(new RepositoryLearn.Models.Company { Id = 2, Name = "Second" });
@@ -26,7 +24,6 @@ namespace Learn.Tests
             context.Phones.Add(new RepositoryLearn.Models.Phone { Id = 2, Name = "SecondPhone", CompanyId = 2, Price = 300 });
             context.SaveChanges();
 
-            //context.Dispose();
             _uow = new NHibernateUnitOfWork(/*"Data Source=:memory:;mode=memory;cache=shared"*/connection);
         }
 
@@ -82,7 +79,7 @@ namespace Learn.Tests
 
             var check = _uow.Companies.FindById(targetCompanyId);
             Assert.True(check!.Name == checkName);
-            
+
             _uow.Save();
             _uow.Start();
             _uow.Undo();
@@ -132,7 +129,6 @@ namespace Learn.Tests
         {
             _uow?.Dispose(true);
             connection?.Dispose();
-
         }
     }
 }

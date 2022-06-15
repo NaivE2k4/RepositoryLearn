@@ -106,7 +106,7 @@ public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo
             EntityType = typeof(TEntity),
         });
         _dbSet.Remove(item);
-        
+
         await Task.CompletedTask;
     }
 
@@ -121,7 +121,7 @@ public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo
             Id = id,
             EntityType = typeof(TEntity),
         });
-        
+
         if(entry.State != EntityState.Added)
             entry.State = EntityState.Modified;
     }
@@ -149,7 +149,7 @@ public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo
             case UndoOpType.Create:
                 var obj = _dbSet.Find(undoInfo.Id); //Finds cached or not
                 _dbSet.Remove(obj!);
-                
+
                 break;
             case UndoOpType.Update:
                 var entity = _dbSet.Find(undoInfo.Id);
@@ -159,7 +159,7 @@ public class EFGenericRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRepo
                     entry.State = EntityState.Modified;
                 break;
             case UndoOpType.Delete:
-                _dbSet.Add((TEntity)undoInfo.PrevState!);
+                _dbSet.Add((TEntity) undoInfo.PrevState!);
                 break;
         }
     }

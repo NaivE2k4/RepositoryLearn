@@ -11,10 +11,7 @@
 ///https://hibernatingrhinos.com/products/nhprof/learn/#DoNotUseImplicitTransactions
 ///
 
-using Learn.Dapper;
 using Learn.EF;
-using Learn.NHibernate;
-using RepositoryLearn.Models;
 
 var efContext = new EFLearnContext();
 using(EFUnitOfWork<EFLearnContext> uow = new(efContext))
@@ -43,7 +40,7 @@ using(EFUnitOfWork<EFLearnContext> uow = new(efContext))
     }
     uow.Undo();
     Console.WriteLine("EF after undo:");
-    foreach (var item in await uow.Companies.GetAsync())
+    foreach(var item in await uow.Companies.GetAsync())
     {
         Console.WriteLine($"{item.Id}: {item.Name}");
     }

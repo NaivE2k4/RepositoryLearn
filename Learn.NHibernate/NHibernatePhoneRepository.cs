@@ -1,6 +1,5 @@
 ﻿using Learn.Abstractions;
 using Learn.Models.NHibernate;
-using Learn.Undo;
 using NHibernate;
 
 namespace Learn.NHibernate;
@@ -14,11 +13,11 @@ public class NHibernatePhoneRepository : IGenericRepository<Phone>, IRepository
     }
     public void Create(Phone item)
     {
-        var id = (int)_session.Save(item);
+        var id = (int) _session.Save(item);
     }
     public async Task CreateAsync(Phone item)
     {
-        var id = (int)await _session.SaveAsync(item);
+        var id = (int) await _session.SaveAsync(item);
     }
     public Phone FindById(int id)
     {

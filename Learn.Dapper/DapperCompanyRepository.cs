@@ -20,7 +20,7 @@ public class DapperCompanyRepository : IGenericRepository<Company>, IRepository
     }
 
     private int Execute(string sql, object param)
-    { 
+    {
         //using var conn = new SQLiteConnection(_connectionString);
         return _dbConnection.Execute(sql, param, _dbTransaction);
     }

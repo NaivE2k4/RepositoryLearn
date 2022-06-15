@@ -29,7 +29,7 @@ public class EFUowTests : IDisposable
         context.Phones.Add(new Phone { Id = 2, Name = "SecondPhone", CompanyId = 2, Price = 300 });
         context.SaveChanges();
     }
-    
+
     [Fact]
     public async Task DatabaseIsAvailableAndCanBeConnectedTo()
     {
@@ -79,7 +79,7 @@ public class EFUowTests : IDisposable
 
         var company2 = _uow.Companies.FindById(targetCompanyId);
         company2!.Name = checkName;
-        
+
         _uow.Companies.Update(targetCompanyId, company2);
         _uow.Save();
         _uow.Start();
@@ -121,7 +121,7 @@ public class EFUowTests : IDisposable
         _uow.Companies.Update(3, company3);
         _uow.Companies.Remove(company3);
         _uow.Save();
-        
+
         var check = _uow.Companies.FindById(3);
         Assert.Null(check);
 

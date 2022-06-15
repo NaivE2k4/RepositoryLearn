@@ -1,5 +1,5 @@
-﻿using Learn.Models.Visitor;
-using Learn.Abstractions;
+﻿using Learn.Abstractions;
+using Learn.Models.Visitor;
 
 namespace Learn.Undo;
 
@@ -87,7 +87,7 @@ public class GenericUndoRepository<TEntity> : IGenericUndoRepo<TEntity>, IUndoRe
     public void Update(int id, TEntity item)
     {
         var existing = _repo.FindById(id);
-        var exCopy = (TEntity)existing.Clone();
+        var exCopy = (TEntity) existing.Clone();
         _undoCollection.Add(id, typeof(TEntity), UndoOpType.Update, exCopy);
         _repo.Update(id, item);
     }

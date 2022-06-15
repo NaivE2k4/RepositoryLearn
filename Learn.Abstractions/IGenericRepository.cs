@@ -12,7 +12,7 @@ public interface IGenericRepository<TEntity> where TEntity : class, ICloneable
     void Remove(TEntity item);
     Task RemoveAsync(TEntity item);
     //Id is needed for Undo
-    void Update(int id,TEntity item);
+    void Update(int id, TEntity item);
     Task UpdateAsync(int id, TEntity item);
 
 }

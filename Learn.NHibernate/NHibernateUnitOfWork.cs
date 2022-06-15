@@ -16,14 +16,14 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
     private readonly DbConnection _connection;
     private readonly UowUndoCollection _undoCollection = new();
     private bool _disposedValue;
-    private static readonly Dictionary<Type, (Type,Type)> _entityToRepo =
+    private static readonly Dictionary<Type, (Type, Type)> _entityToRepo =
         new()
         {
             { typeof(Company), (typeof(NHibernateCompanyRepository), typeof(GenericUndoRepository<Company>) )},
             { typeof(Phone), (typeof(NHibernatePhoneRepository), typeof(GenericUndoRepository<Phone>)) },
         };
 
-    public GenericUndoRepository<Phone> Phones 
+    public GenericUndoRepository<Phone> Phones
     {
         get
         {
@@ -32,7 +32,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
             return new GenericUndoRepository<Phone>(repo, _undoCollection);
         }
     }
-    public GenericUndoRepository<Company> Companies 
+    public GenericUndoRepository<Company> Companies
     {
         get
         {
@@ -117,7 +117,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         {
             var undoItem = _undoCollection.UndoOne();
             var repoType = _entityToRepo[undoItem.EntityType];
-            var repo = (IRepository)Activator.CreateInstance(repoType.Item1, _session);
+            var repo = (IRepository) Activator.CreateInstance(repoType.Item1, _session);
             var undoRepo = (IUndoRepo) Activator.CreateInstance(repoType.Item2, repo, _undoCollection);
             undoRepo.UndoOperaton(undoItem);
         }

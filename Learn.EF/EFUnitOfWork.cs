@@ -16,8 +16,8 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     private Dictionary<Type, IUndoRepo> Repos;
 
     public IGenericRepository<Company> Companies
-    { 
-        get 
+    {
+        get
         {
             return _companies;
         }
@@ -46,7 +46,7 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     }
 
     public void Save()
-    { 
+    {
         _dBContext.SaveChanges();
         _dBContext.ChangeTracker.Clear();
     }
@@ -56,8 +56,8 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
     /// </summary>
     public void Undo()
     {
-        
-        while (_undoCollection.CanUndo)
+
+        while(_undoCollection.CanUndo)
         {
             var undoInfo = _undoCollection.UndoOne();
             var repo = Repos[undoInfo.EntityType!];
@@ -70,9 +70,9 @@ public class EFUnitOfWork<TContext> : IDisposable, IUnitOfWork where TContext : 
 
     public virtual void Dispose(bool disposing)
     {
-        if (!this.disposed)
+        if(!this.disposed)
         {
-            if (disposing)
+            if(disposing)
             {
                 _dBContext.Dispose();
             }

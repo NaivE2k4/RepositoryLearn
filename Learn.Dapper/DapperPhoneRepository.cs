@@ -72,7 +72,7 @@ public class DapperPhoneRepository : IGenericRepository<Phone>, IRepository
 
     public void Remove(Phone item)
     {
-        Execute("DELETE FROM Phones WHERE id = @ID", new { item.Id});
+        Execute("DELETE FROM Phones WHERE id = @ID", new { item.Id });
     }
 
     public async Task RemoveAsync(Phone item)

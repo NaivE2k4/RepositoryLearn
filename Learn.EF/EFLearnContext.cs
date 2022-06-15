@@ -20,7 +20,7 @@ public class EFLearnContext : DbContext
     private readonly DbConnection _conn;
 
     public EFLearnContext()
-        :base()
+        : base()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
@@ -28,7 +28,7 @@ public class EFLearnContext : DbContext
         _connstring = $"Data Source={DbPath}";
     }
     public EFLearnContext(DbContextOptions<EFLearnContext> options)
-        :base(options)
+        : base(options)
     {
         _connstring = options.FindExtension<SqliteOptionsExtension>()?.Connection?.ConnectionString ?? "";
     }
