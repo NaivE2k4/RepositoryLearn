@@ -52,7 +52,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connectionString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
-        _configuration.Cache(props => props.UseQueryCache = false);
+        //_configuration.Cache(props => props.UseQueryCache = false);
 
         _sessionFactory = _configuration.BuildSessionFactory();
     }
@@ -64,7 +64,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
-        _configuration.Cache(props => props.UseQueryCache = false);
+        //_configuration.Cache(props => props.UseQueryCache = false);
 
         _sessionFactory = _configuration.BuildSessionFactory();
     }
@@ -75,7 +75,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
         _configuration.SetProperty("connection.connection_string", connection.ConnectionString);
         _configuration.AddClass(typeof(Company));
         _configuration.AddClass(typeof(Phone));
-        _configuration.Cache(props => props.UseQueryCache = false);
+        //_configuration.Cache(props => props.UseQueryCache = false);
         _sessionFactory = _configuration.BuildSessionFactory();
         _connection = connection;
     }
@@ -93,7 +93,7 @@ public class NHibernateUnitOfWork : IDisposable, IUnitOfWork
             _session = _sessionFactory.WithOptions().Connection(_connection).OpenSession();
         else
             _session = _sessionFactory.OpenSession();
-        _session.CacheMode = CacheMode.Ignore;
+        //_session.CacheMode = CacheMode.Ignore;
         _transaction = _session.BeginTransaction();
     }
 

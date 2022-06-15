@@ -13,7 +13,7 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
         _session = session;
     }
     public void Create(Company item)
-    { 
+    {
         var id = (int)_session.Save(item);
     }
     public async Task CreateAsync(Company item)
@@ -51,7 +51,6 @@ public class NHibernateCompanyRepository : IGenericRepository<Company>, IReposit
 
     public void Remove(Company item)
     {
-        _session.Evict(item);
         _session.Delete(item);
     }
     public async Task RemoveAsync(Company item)
